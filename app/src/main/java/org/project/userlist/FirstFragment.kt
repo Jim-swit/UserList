@@ -21,7 +21,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -53,14 +55,19 @@ class FirstFragment : Fragment() {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 
             CoroutineScope(Dispatchers.Main).launch {
-                val userData = withContext(Dispatchers.IO) { retrofitApi.getSearchResult() }
+                val listUser = withContext(Dispatchers.IO) { retrofitApi.getSearchResult() }
 
-                userData?.body()?.forEach {
-                    Log.d("Test", "test : ${it.name}")
-
+                listUser?.body()?.forEach {
+                    /*
                     Glide.with(this@FirstFragment)
                         .load(it.image)
                         .into(binding.imageviewFirst)
+
+                     */
+
+                    val userData = withContext(Dispatchers.IO) { retrofitApi.getUser(it.login) }
+                    Log.d("Test", "login : ${it.login}   /   name  :  ${userData?.body()?.name}")
+
                 }
 
             }
@@ -76,10 +83,10 @@ class FirstFragment : Fragment() {
 
 
 object Retrofit {
-    private const val BASE_URL = "https://my-json-server.typicode.com/Jim-swit/userJson/"
+    private const val BASE_URL = "https://api.github.com/"
     private var retrofit: Retrofit? = null
 
-    val instance: RetrofitAPI
+    val instance: RetrofitGITAPI
         get() {
             val gson = GsonBuilder()
                 .setLenient()
@@ -91,22 +98,31 @@ object Retrofit {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
             }
-            return retrofit!!.create(RetrofitAPI::class.java)
+            return retrofit!!.create(RetrofitGITAPI::class.java)
         }
 }
 
-interface RetrofitAPI {
-    @Headers("Content-Type: application/json")
-    @GET("posts")
-    suspend fun getSearchResult():
-            Response<List<UserProfile>>
+interface RetrofitGITAPI {
+    @GET("users")
+    suspend fun getSearchResult(): Response<List<ListUser>>
+
+    @GET("users/{user_name}")
+    suspend fun getUser(
+        @Path("user_name") user_name: String
+    ): Response<User>
+
 }
 
-data class UserProfile(
-    @SerializedName("name") val name:String,
-    @SerializedName("image") val image:String,
-    @SerializedName("position") val position:String,
-    @SerializedName("team") val team:String,
-    @SerializedName("phone") val phone:String,
-    @SerializedName("email") val email:String,
+data class ListUser(
+    @SerializedName("login") val login:String,
+    @SerializedName("id") val id:String,
+    @SerializedName("node_id") val node_id:String,
+    @SerializedName("url") val url:String
 )
+data class User(
+    @SerializedName("login") val login:String,
+    @SerializedName("id") val id:String,
+    @SerializedName("name") val name:String
+)
+
+
