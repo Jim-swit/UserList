@@ -10,10 +10,9 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import org.project.userlist.databinding.FragmentFirstBinding
 import retrofit2.Call
 import retrofit2.Response
@@ -24,6 +23,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.Path
+import java.io.IOException
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -55,21 +55,16 @@ class FirstFragment : Fragment() {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 
             CoroutineScope(Dispatchers.Main).launch {
-                val listUser = withContext(Dispatchers.IO) { retrofitApi.getSearchResult() }
-
-                listUser?.body()?.forEach {
-                    /*
-                    Glide.with(this@FirstFragment)
-                        .load(it.image)
-                        .into(binding.imageviewFirst)
-
-                     */
-
-                    val userData = withContext(Dispatchers.IO) { retrofitApi.getUser(it.login) }
-                    Log.d("Test", "login : ${it.login}   /   name  :  ${userData?.body()?.name}")
-
+                val listUser = withContext(Dispatchers.IO) {
+                    retrofitApi.getSearchResult()
                 }
 
+                Log.d("test", "listUser : ${listUser?.body()}")
+                listUser?.body()?.forEach {
+                    //val temp = getUser(it.login)
+                    val temp = getUser(it.login)
+                    Log.d("test", "test : ${temp?.body()?.login}")
+                }
             }
         }
 
@@ -78,6 +73,9 @@ class FirstFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    suspend fun getUser(login: String):Response<User> {
+        return withContext(Dispatchers.IO) { retrofitApi.getUser(login) }
     }
 }
 
@@ -94,21 +92,38 @@ object Retrofit {
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(provideOkHttpClient(AppInterceptor()))
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
             }
             return retrofit!!.create(RetrofitGITAPI::class.java)
         }
+    private fun provideOkHttpClient(interceptor: AppInterceptor): OkHttpClient
+            = OkHttpClient.Builder().run {
+        addInterceptor(interceptor)
+        build()
+    }
+    class AppInterceptor : Interceptor {
+
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain) : okhttp3.Response = with(chain) {
+            val newRequest = request().newBuilder()
+                .addHeader("Authorization", "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")
+                .build()
+            proceed(newRequest)
+        }
+    }
 }
 
 interface RetrofitGITAPI {
     @GET("users")
-    suspend fun getSearchResult(): Response<List<ListUser>>
+    suspend fun getSearchResult(
+    ): Response<List<ListUser>>
 
-    @GET("users/{user_name}")
+    @GET("users/{login}")
     suspend fun getUser(
-        @Path("user_name") user_name: String
+        @Path("login") login: String
     ): Response<User>
 
 }
