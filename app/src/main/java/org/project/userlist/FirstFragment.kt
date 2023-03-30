@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.project.userlist.databinding.FragmentFirstBinding
 import retrofit2.Call
 import retrofit2.Response
@@ -50,12 +52,17 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                val userData = retrofitApi.getSearchResult()
+            CoroutineScope(Dispatchers.Main).launch {
+                val userData = withContext(Dispatchers.IO) { retrofitApi.getSearchResult() }
 
                 userData?.body()?.forEach {
                     Log.d("Test", "test : ${it.name}")
+
+                    Glide.with(this@FirstFragment)
+                        .load(it.image)
+                        .into(binding.imageviewFirst)
                 }
+
             }
         }
 
@@ -102,10 +109,4 @@ data class UserProfile(
     @SerializedName("team") val team:String,
     @SerializedName("phone") val phone:String,
     @SerializedName("email") val email:String,
-)
-
-data class UserProfile_Preview(
-    @SerializedName("name") val name:String,
-    @SerializedName("image") val image:String,
-    @SerializedName("position") val position:String
 )
