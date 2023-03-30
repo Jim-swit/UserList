@@ -61,9 +61,9 @@ class FirstFragment : Fragment() {
 
                 Log.d("test", "listUser : ${listUser?.body()}")
                 listUser?.body()?.forEach {
-                    //val temp = getUser(it.login)
-                    val temp = getUser(it.login)
-                    Log.d("test", "test : ${temp?.body()?.login}")
+                    Glide.with(this@FirstFragment)
+                        .load(it.avatar_url)
+                        .into(binding.imageviewFirst)
                 }
             }
         }
@@ -132,7 +132,9 @@ data class ListUser(
     @SerializedName("login") val login:String,
     @SerializedName("id") val id:String,
     @SerializedName("node_id") val node_id:String,
-    @SerializedName("url") val url:String
+    @SerializedName("url") val url:String,
+    @SerializedName("avatar_url") val avatar_url:String
+
 )
 data class User(
     @SerializedName("login") val login:String,
