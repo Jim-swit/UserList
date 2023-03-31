@@ -1,14 +1,13 @@
-package org.project.userlist
+package org.project.userlist.db
 
-import android.util.Log
-import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
 import kotlinx.coroutines.*
-import retrofit2.Response
+import org.project.userlist.model.ListUser
+import org.project.userlist.RetrofitGITAPI
 import kotlin.coroutines.CoroutineContext
 
 class DataSource(
-    val apiService:RetrofitGITAPI
+    val apiService: RetrofitGITAPI
 ) : ItemKeyedDataSource<Int, ListUser>(), CoroutineScope {
  // getUserListPaging
 

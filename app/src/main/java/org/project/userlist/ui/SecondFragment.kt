@@ -1,4 +1,4 @@
-package org.project.userlist
+package org.project.userlist.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import org.project.userlist.R
 import org.project.userlist.databinding.FragmentSecondBinding
 
 /**

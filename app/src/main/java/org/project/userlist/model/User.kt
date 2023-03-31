@@ -1,4 +1,4 @@
-package org.project.userlist
+package org.project.userlist.model
 
 import com.google.gson.annotations.SerializedName
 

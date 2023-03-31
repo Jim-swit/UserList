@@ -1,16 +1,12 @@
-package org.project.userlist
+package org.project.userlist.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Response
+import org.project.userlist.api.Retrofit
+import org.project.userlist.db.ItemSourceFactory
+import org.project.userlist.model.ListUser
 
 class ListUserViewModel: ViewModel() {
 

@@ -1,14 +1,13 @@
-package org.project.userlist
+package org.project.userlist.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import org.project.userlist.databinding.ItemViewBinding
+import org.project.userlist.model.ListUser
 
 class UserListAdapter
     : PagedListAdapter<ListUser, UserListAdapter.UserListViewHolder>(DIFF_CALLBACK) {

@@ -1,9 +1,9 @@
-package org.project.userlist
+package org.project.userlist.db
 
 import androidx.paging.DataSource
 import androidx.paging.PagedList
-import kotlinx.coroutines.Deferred
-import retrofit2.Response
+import org.project.userlist.RetrofitGITAPI
+import org.project.userlist.model.ListUser
 
 class ItemSourceFactory(
     private val api: RetrofitGITAPI
