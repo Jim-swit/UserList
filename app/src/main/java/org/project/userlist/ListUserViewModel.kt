@@ -25,11 +25,8 @@ class ListUserViewModel: ViewModel() {
     }
 
     fun viewmodel() {
-        viewModelScope.launch {
-            val temp = async {  getData() }
-            val listUserDataSourceFactory = async { ItemSourceFactory(temp.await()) }
-            pagedListbuilder = LivePagedListBuilder<Int, ListUser>(listUserDataSourceFactory.await(), config)
-        }
+        val listUserDataSourceFactory = ItemSourceFactory(retrofitApi)
+        pagedListbuilder = LivePagedListBuilder<Int, ListUser>(listUserDataSourceFactory, config)
     }
 
     // 특정 키로 이동

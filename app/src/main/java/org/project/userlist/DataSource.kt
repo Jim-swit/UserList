@@ -3,18 +3,14 @@ package org.project.userlist
 import android.util.Log
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
 class DataSource(
-
-    val asyncItems: Response<List<ListUser>>
+    val apiService:RetrofitGITAPI
 ) : ItemKeyedDataSource<Int, ListUser>(), CoroutineScope {
-
+ // getUserListPaging
 
     private val items = mutableListOf<ListUser>()
 
@@ -27,31 +23,73 @@ class DataSource(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<ListUser>
     ) {
-        val items = asyncItems?.body()
-
-        if(items.isNullOrEmpty()) {
-            // TODO : EmptyAction
-        } else {
-            this@DataSource.items.clear()
-            this@DataSource.items.addAll(items)
-
-            val subList = getSubList(items, params.requestedInitialKey ?: 0, params.requestedLoadSize)
-            callback.onResult(subList)
+        CoroutineScope(coroutineContext).launch {
+            val items = async {
+                apiService.getUserListPaging(
+                    since = 1,
+                    per_page = 5
+                )
+            }
+            items.await()?.body().let {
+                if(it.isNullOrEmpty()) {
+                    // TODO : EmptyAction
+                } else {
+                    this@DataSource.items.clear()
+                    this@DataSource.items.addAll(it)
+                    Log.d("test", "Load : ${it.get(0).id}")
+                    //val subList = getSubList(it, params.requestedInitialKey ?: 0, params.requestedLoadSize)
+                    callback.onResult(it)
+                }
+            }
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<ListUser>) {
-        val index = params.key + 1
-        Log.d("test", "after : ${index}")
-        val subList = getSubList(items, index, params.requestedLoadSize)
-        callback.onResult(subList)
+        CoroutineScope(coroutineContext).launch {
+            val index = params.key + 1
+
+            val items = async {
+                apiService.getUserListPaging(
+                    since = index,
+                    per_page = 5
+                )
+            }
+            items.await()?.body().let {
+                if(it.isNullOrEmpty()) {
+                    // TODO : EmptyAction
+                } else {
+                    this@DataSource.items.clear()
+                    this@DataSource.items.addAll(it)
+                    Log.d("test", "After : ${it.get(0).id}")
+                    //val subList = getSubList(it, index, params.requestedLoadSize)
+                    callback.onResult(it)
+                }
+            }
+        }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<ListUser>) {
-        val index = params.key - 1
-        Log.d("test", "before : ${index}")
-        val subList = getSubList(items, index, params.requestedLoadSize, true)
-        callback.onResult(subList)
+        CoroutineScope(coroutineContext).launch {
+            val index = params.key - 1
+
+            val items = async {
+                apiService.getUserListPaging(
+                    since = index,
+                    per_page = 5
+                )
+            }
+            items.await()?.body().let {
+                if(it.isNullOrEmpty()) {
+                    // TODO : EmptyAction
+                } else {
+                    this@DataSource.items.clear()
+                    this@DataSource.items.addAll(it)
+                    Log.d("test", "Before : ${it.get(0).id}")
+                    //val subList = getSubList(it, index, params.requestedLoadSize, true)
+                    callback.onResult(it)
+                }
+            }
+        }
     }
 
     private fun getSubList(
