@@ -16,7 +16,7 @@ class ListUserViewModel: ViewModel() {
 
     private val retrofitApi = Retrofit.instance
 
-    private lateinit var pagedListbuilder: LivePagedListBuilder<Int, ListUser>
+    private lateinit var pagedListbuilder : LivePagedListBuilder<Int, ListUser>
 
     private val config = ItemSourceFactory.providePagingConfig()
 
@@ -32,17 +32,5 @@ class ListUserViewModel: ViewModel() {
     // 특정 키로 이동
     fun load(key: Int) : LiveData<PagedList<ListUser>> {
         return pagedListbuilder.setInitialLoadKey(key).build()
-    }
-
-    fun getload() : LiveData<PagedList<ListUser>> {
-        return pagedListbuilder.build()
-    }
-
-    private suspend fun getData(): Response<List<ListUser>> {
-        return withContext(Dispatchers.IO) {
-            val temp = retrofitApi.getSearchResult()
-            temp
-        }
-
     }
 }

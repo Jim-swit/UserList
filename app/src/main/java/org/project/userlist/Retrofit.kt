@@ -10,6 +10,8 @@ import java.io.IOException
 
 object Retrofit {
     private const val BASE_URL = "https://api.github.com/"
+    private const val GITHEADERAUTH = "Authorization"
+
     private var retrofit: Retrofit? = null
 
     val instance: RetrofitGITAPI
@@ -33,11 +35,10 @@ object Retrofit {
         build()
     }
     class AppInterceptor : Interceptor {
-
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain) : okhttp3.Response = with(chain) {
             val newRequest = request().newBuilder()
-                .addHeader("Authorization", "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")
+                .addHeader(GITHEADERAUTH,BuildConfig.GITAUTHORIZATIONTOKEN)
                 .build()
             proceed(newRequest)
         }
