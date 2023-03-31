@@ -9,15 +9,6 @@ import retrofit2.http.Query
 
 interface RetrofitGITAPI {
     @GET("users")
-    suspend fun getSearchResult(
-    ): Response<List<ListUser>>
-
-    @GET("users/{login}")
-    suspend fun getUser(
-        @Path("login") login: String
-    ): Response<User>
-
-    @GET("users")
     suspend fun getUserListPaging(
         @Query("since") since: Int,
         @Query("per_page") per_page: Int
