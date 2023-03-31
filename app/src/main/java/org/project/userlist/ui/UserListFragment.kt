@@ -10,16 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
-import org.project.userlist.databinding.FragmentFirstBinding
+import org.project.userlist.databinding.FragmentUserListBinding
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class UserListFragment : Fragment() {
 
     private lateinit var adapter: UserListAdapter
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentUserListBinding? = null
 
 
     //private lateinit var viewmodel: ListUserViewModel
@@ -32,7 +32,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentUserListBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -51,7 +51,7 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             CoroutineScope(Dispatchers.Main).launch {
-                viewmodel.load(10).observe(this@FirstFragment.viewLifecycleOwner, Observer {
+                viewmodel.load(10).observe(this@UserListFragment.viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
             }
