@@ -21,10 +21,7 @@ class UserListFragment : Fragment() {
 
     private var _binding: FragmentUserListBinding? = null
 
-
-    //private lateinit var viewmodel: ListUserViewModel
-    private lateinit var viewmodel: ListUserViewModel
-
+    private val userListViewModel: UserListViewModel by lazy { ViewModelProvider(this).get(UserListViewModel::class.java) }
 
     private val binding get() = _binding!!
 
@@ -45,13 +42,10 @@ class UserListFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
-        viewmodel = ViewModelProvider(this).get(ListUserViewModel::class.java)
-
-
         binding.buttonFirst.setOnClickListener {
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             CoroutineScope(Dispatchers.Main).launch {
-                viewmodel.load(10).observe(this@UserListFragment.viewLifecycleOwner, Observer {
+                userListViewModel.load(10).observe(this@UserListFragment.viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
             }
@@ -63,12 +57,6 @@ class UserListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    /*
-    suspend fun getUser(login: String):Response<User> {
-        return withContext(Dispatchers.IO) { retrofitApi.getUser(login) }
-    }
-
-     */
 }
 
 

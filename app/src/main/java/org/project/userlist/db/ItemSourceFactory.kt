@@ -3,12 +3,12 @@ package org.project.userlist.db
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import org.project.userlist.RetrofitGITAPI
-import org.project.userlist.model.ListUser
+import org.project.userlist.model.UserList
 
 class ItemSourceFactory(
     private val api: RetrofitGITAPI
-):DataSource.Factory<Int, ListUser>() {
-    override fun create(): DataSource<Int, ListUser> {
+):DataSource.Factory<Int, UserList>() {
+    override fun create(): DataSource<Int, UserList> {
         return DataSource(api)
     }
 

@@ -1,10 +1,8 @@
 package org.project.userlist
 
-import org.project.userlist.model.ListUser
-import org.project.userlist.model.User
+import org.project.userlist.model.UserList
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitGITAPI {
@@ -12,5 +10,5 @@ interface RetrofitGITAPI {
     suspend fun getUserListPaging(
         @Query("since") since: Int,
         @Query("per_page") per_page: Int
-    ): Response<List<ListUser>>
+    ): Response<List<UserList>>
 }
