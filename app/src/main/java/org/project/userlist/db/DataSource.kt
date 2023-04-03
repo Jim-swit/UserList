@@ -2,24 +2,24 @@ package org.project.userlist.db
 
 import androidx.paging.ItemKeyedDataSource
 import kotlinx.coroutines.*
-import org.project.userlist.model.UserList
 import org.project.userlist.RetrofitGITAPI
+import org.project.userlist.model.Users
 import kotlin.coroutines.CoroutineContext
 
 class DataSource(
     val apiService: RetrofitGITAPI
-) : ItemKeyedDataSource<Int, UserList>(), CoroutineScope {
+) : ItemKeyedDataSource<Int, Users>(), CoroutineScope {
  // getUserListPaging
 
-    private val items = mutableListOf<UserList>()
+    private val items = mutableListOf<Users>()
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.IO
 
-    override fun getKey(item: UserList): Int = item.id.toInt()
+    override fun getKey(item: Users): Int = item.id.toInt()
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<UserList>
+        callback: LoadInitialCallback<Users>
     ) {
         CoroutineScope(coroutineContext).launch {
             val items = async {
@@ -41,7 +41,7 @@ class DataSource(
         }
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<UserList>) {
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Users>) {
         CoroutineScope(coroutineContext).launch {
             val index = params.key + 1
 
@@ -64,7 +64,7 @@ class DataSource(
         }
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<UserList>) {
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Users>) {
         /*
         CoroutineScope(coroutineContext).launch {
             val index = params.key - params.requestedLoadSize

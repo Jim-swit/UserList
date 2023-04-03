@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/UserListFragment"
-        android:name="org.project.userlist.ui.UserListFragment"
+        android:name="org.project.userlist.ui.UsersFragment"
         android:label="@string/user_list_fragment_label"
         tools:layout="@layout/fragment_user_list">
 
