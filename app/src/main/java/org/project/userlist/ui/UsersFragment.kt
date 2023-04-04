@@ -1,6 +1,7 @@
 package org.project.userlist.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.project.userlist.databinding.FragmentUserListBinding
 import org.project.userlist.db.UsersDb
+import org.project.userlist.model.Users
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -52,13 +54,7 @@ class UsersFragment : Fragment() {
             /*
             // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             Log.d("test", "회사 : ${userListViewModel.test.value?.company}")
-            CoroutineScope(Dispatchers.IO).launch {
-                userListViewModel.insertUsersDb(
-                    Users(
-                        "2","2","3","4","https://user-images.githubusercontent.com/32217176/228440522-d84a78d1-23c4-48a4-bb37-bfa059da7a08.png"
-                    )
-                )
-            }
+
 
 
             CoroutineScope(Dispatchers.Main).launch {
@@ -70,9 +66,29 @@ class UsersFragment : Fragment() {
              */
 
             CoroutineScope(Dispatchers.Main).launch {
+                /*
                 userListViewModel.load(0).observe(this@UsersFragment.viewLifecycleOwner, Observer {
                     adapter.submitList(it)
                 })
+
+                 */
+                userListViewModel.postData().observe(this@UsersFragment.viewLifecycleOwner, Observer {
+                    adapter.submitList(it)
+
+                    Log.d("test", "Room : ${it.size}")
+                    if(it.isNotEmpty()) {
+                        Log.d("test", "Room : ${it[0]?.login}")
+                    }
+                })
+            }
+        }
+        binding.buttonInsert.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                userListViewModel.insertUsersDb(
+                    Users(
+                        "3","2","3","4","https://user-images.githubusercontent.com/32217176/228440522-d84a78d1-23c4-48a4-bb37-bfa059da7a08.png"
+                    )
+                )
             }
         }
     }

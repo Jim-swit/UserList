@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +25,8 @@ class UsersViewModel(
 
     private val retrofitApi = Retrofit.instance
 
-    //private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
+    private lateinit var temp : LiveData<PagedList<Users>>
 
     private val config = ItemSourceFactory.providePagingConfig()
 
@@ -37,7 +38,8 @@ class UsersViewModel(
     init {
         //initViewModel()
         Log.d("test", "init0")
-        postData()
+        //viewModelScope.launch { postData() }
+
         Log.d("test", "init1")
     }
 
@@ -91,13 +93,10 @@ class UsersViewModel(
         }
     }
 
-    private fun postData(){
-        Log.d("test", "init3")
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-            Log.d("test","Room : ${db.usersDao().getAll().create()}")
-            pagedListbuilder = LivePagedListBuilder(db.usersDao().getAll(), config)
-            }
-        }
+    suspend fun postData() : LiveData<PagedList<Users>> {
+        val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
+        //pagedListbuilder = LivePagedListBuilder(data, config).build()
+
+        return LivePagedListBuilder(data, config).build()
     }
 }

@@ -1,5 +1,6 @@
 package org.project.userlist.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
@@ -14,6 +15,7 @@ class UsersAdapter
 
     class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
         fun bind(currentItem: Users) {
+            Log.d("test", "Room : ${currentItem.login}")
             binding.recyclerTextView.text = currentItem.login
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
