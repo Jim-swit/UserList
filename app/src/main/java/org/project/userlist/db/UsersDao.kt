@@ -16,7 +16,7 @@ interface UsersDao {
     fun insertUsers(vararg users: Users)
 
     @Delete
-    fun delete(userList: Users)
+    fun delete(users: Users)
 
     @Query("DELETE FROM Users")
     fun deleteAll()

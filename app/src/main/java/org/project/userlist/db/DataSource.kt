@@ -28,7 +28,7 @@ class DataSource(
                     per_page = params.requestedLoadSize
                 )
             }
-            items.await()?.body().let {
+            items.await().body().let {
                 if(it.isNullOrEmpty()) {
                     // TODO : EmptyAction
                 } else {

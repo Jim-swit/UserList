@@ -26,6 +26,8 @@ class UsersFragment : Fragment() {
 
     private var _binding: FragmentUserListBinding? = null
 
+    
+    // ViewModel에 넘겨줄 매개변수를 Koin으로 주입해준다면 아래 코드로 대체 가능
     //private val userListViewModel: UsersViewModel by viewModels()
     private val userListViewModel: UsersViewModel by viewModels {
         UsersViewModel.UsersViewModelFactory(UsersDb.create(requireActivity().applicationContext))
@@ -42,55 +44,33 @@ class UsersFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = binding.recyclerView
-        adapter = UsersAdapter()
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        initAdapter()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
+                adapter.submitList(it)
+                if(it.isNotEmpty()) {
+                    Log.d("test", "Room : ${it[0]?.id}   ${it[0]?.login}")
+                }
+            })
+        }
 
         binding.buttonFirst.setOnClickListener {
-            /*
-            // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-            Log.d("test", "회사 : ${userListViewModel.test.value?.company}")
 
-
-
-            CoroutineScope(Dispatchers.Main).launch {
-                userListViewModel.load(0).observe(this@UsersFragment.viewLifecycleOwner, Observer {
-                    adapter.submitList(it)
-                })
-            }
-
-             */
-
-            CoroutineScope(Dispatchers.Main).launch {
-                /*
-                userListViewModel.load(0).observe(this@UsersFragment.viewLifecycleOwner, Observer {
-                    adapter.submitList(it)
-                })
-
-                 */
-                userListViewModel.postData().observe(this@UsersFragment.viewLifecycleOwner, Observer {
-                    adapter.submitList(it)
-
-                    Log.d("test", "Room : ${it.size}")
-                    if(it.isNotEmpty()) {
-                        Log.d("test", "Room : ${it[0]?.id}   ${it[0]?.login}")
-                    }
-                })
-            }
+            Log.d("test", "click")
         }
-        binding.buttonInsert.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                userListViewModel.insertUsersDb(
-                    Users(
-                        "3","2","3","4","https://user-images.githubusercontent.com/32217176/228440522-d84a78d1-23c4-48a4-bb37-bfa059da7a08.png"
-                    )
-                )
-            }
-        }
+    }
+    private fun initAdapter() {
+        val recyclerView = binding.recyclerView
+
+        adapter = UsersAdapter()
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }
 
     override fun onDestroyView() {

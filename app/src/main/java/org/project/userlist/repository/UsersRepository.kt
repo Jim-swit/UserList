@@ -1,4 +1,10 @@
 package org.project.userlist.repository
 
-class UsersRepository {
+import org.project.userlist.RetrofitGITAPI
+import org.project.userlist.db.UsersDb
+
+class UsersRepository(
+    val db: UsersDb,
+    private val retrofitApi: RetrofitGITAPI,
+    private val networkPageSize: Int) {
 }

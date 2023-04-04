@@ -9,6 +9,7 @@ import org.project.userlist.model.Users
 @Database(entities = [Users::class], version = 1, exportSchema = false)
 abstract class UsersDb : RoomDatabase() {
     companion object {
+        const val STARTPAGE:Int = 0
         fun create(context: Context): UsersDb {
             val databaseBuilder = if(true) {
                 Room.inMemoryDatabaseBuilder(context, UsersDb::class.java)

@@ -27,9 +27,12 @@ class UsersViewModel(
     private val retrofitApi = Retrofit.instance
 
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
-    private lateinit var temp : LiveData<PagedList<Users>>
 
     private val config = ItemSourceFactory.providePagingConfig()
+
+    //private val _usersList = MutableLiveData<PagedList<Users>>()
+    private val _usersList by lazy { pagedListbuilder.build() }
+    val usersList:LiveData<PagedList<Users>> get() = _usersList
 
     private val _test = MutableLiveData<User>()
     val test:LiveData<User> = _test
@@ -37,18 +40,23 @@ class UsersViewModel(
 //    val usersList : LiveData<PagedList<Users>> = usersDao.getAll()
 
     init {
-        //initViewModel()
-        Log.d("test", "init0")
+        initViewModel()
         //viewModelScope.launch { postData() }
-
-        Log.d("test", "init1")
     }
 
 
     fun initViewModel() {
+        /*
+        // ItemSourceFactory와 DataSource를 기반하여 Paging 처리를 했을 때 사용
         val listUserDataSourceFactory = ItemSourceFactory(retrofitApi)
         pagedListbuilder = LivePagedListBuilder<Int, Users>(listUserDataSourceFactory, config)
 
+         */
+        val boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
+        val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
+
+        pagedListbuilder = LivePagedListBuilder(data, config)
+            .setBoundaryCallback(boundaryCallback)
     }
 
 
@@ -68,41 +76,29 @@ class UsersViewModel(
     }
 
 
-
-
     // 특정 키로 이동
-    fun load(key: Int) : LiveData<PagedList<Users>> {
+    fun postKeyData(key: Int) : LiveData<PagedList<Users>> {
         return pagedListbuilder.setInitialLoadKey(key).build()
     }
+
+    // Users 데이터 초기화
+    fun getData():LiveData<PagedList<Users>> {
+        return pagedListbuilder.build()
+    }
+
+    // ViewModel에 넘겨줄 매개변수가 있기에 Factory 구현
+    // Koin 적용 시 제거 가능
     class UsersViewModelFactory(val db: UsersDb):ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return UsersViewModel(db) as T
         }
     }
-    /////////////
+    /* TODO: 사용자 등록
     fun insertUsersDb(users: Users) {
-        users.let { posts ->
-            db.runInTransaction {
-                db.usersDao().insertUsers(
-                    Users(
-                        id = posts.id,
-                        login = posts.login,
-                        node_id = posts.node_id,
-                        url = posts.url,
-                        avatar_url = posts.avatar_url)
-                )
-            }
+        db.runInTransaction {
+            db.usersDao().insertUsers(users)
         }
     }
 
-    suspend fun postData() : LiveData<PagedList<Users>> {
-        val boundaryCallback = UsersBoundaryCallback(retrofitApi, db)
-
-        val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
-        //pagedListbuilder = LivePagedListBuilder(data, config).build()
-
-        return LivePagedListBuilder(data, config)
-            .setBoundaryCallback(boundaryCallback)
-            .build()
-    }
+     */
 }
