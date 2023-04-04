@@ -13,7 +13,7 @@ interface UsersDao {
     fun getAll(): DataSource.Factory<Int, Users>
 
     @Insert
-    fun insertUsers(users: Users)
+    fun insertUsers(vararg users: Users)
 
     @Delete
     fun delete(userList: Users)

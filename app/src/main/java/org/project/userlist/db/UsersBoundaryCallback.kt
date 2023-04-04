@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.project.userlist.RetrofitGITAPI
 import org.project.userlist.model.Users
@@ -14,49 +15,28 @@ class UsersBoundaryCallback(
     private val db: UsersDb
 ) : PagedList.BoundaryCallback<Users>() {
     override fun onZeroItemsLoaded() {
-        super.onZeroItemsLoaded()
         CoroutineScope(Dispatchers.IO).launch {
-            //db.usersDao().deleteAll()
-            val temp = webService.getUserListPaging(0,5)
 
-            temp.body()?.forEach {users ->
-                users.let { posts ->
-                    db.runInTransaction {
-                        db.usersDao().insertUsers(
-                            Users(
-                                id = posts.id,
-                                login = posts.login,
-                                node_id = posts.node_id,
-                                url = posts.url,
-                                avatar_url = posts.avatar_url)
-                        )
-                    }
+            db.runInTransaction { db.usersDao().deleteAll() }
+
+            val temp = async { webService.getUserListPaging(0,5) }
+
+            temp.await().body()?.let {
+                db.runInTransaction {
+                    db.usersDao().insertUsers(*it.toTypedArray())
                 }
             }
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
-        super.onItemAtEndLoaded(itemAtEnd)
-
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("test", "EndLoaded : ${itemAtEnd.id}")
 
-            val temp = webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5)
+            val temp = async {  webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5) }
 
-            temp.body()?.forEach { users ->
-                users.let { posts ->
-                    db.runInTransaction {
-                        db.usersDao().insertUsers(
-                            Users(
-                                id = posts.id,
-                                login = posts.login,
-                                node_id = posts.node_id,
-                                url = posts.url,
-                                avatar_url = posts.avatar_url
-                            )
-                        )
-                    }
+            temp.await().body()?.let {
+                db.runInTransaction {
+                    db.usersDao().insertUsers(*it.toTypedArray())
                 }
             }
         }
