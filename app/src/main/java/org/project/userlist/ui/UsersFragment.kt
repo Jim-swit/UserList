@@ -77,7 +77,7 @@ class UsersFragment : Fragment() {
 
                     Log.d("test", "Room : ${it.size}")
                     if(it.isNotEmpty()) {
-                        Log.d("test", "Room : ${it[0]?.login}")
+                        Log.d("test", "Room : ${it[0]?.id}   ${it[0]?.login}")
                     }
                 })
             }

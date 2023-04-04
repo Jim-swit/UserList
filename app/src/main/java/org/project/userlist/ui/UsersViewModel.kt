@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.project.userlist.api.Retrofit
 import org.project.userlist.db.ItemSourceFactory
+import org.project.userlist.db.UsersBoundaryCallback
 import org.project.userlist.db.UsersDb
 import org.project.userlist.model.User
 import org.project.userlist.model.Users
@@ -47,6 +48,7 @@ class UsersViewModel(
     fun initViewModel() {
         val listUserDataSourceFactory = ItemSourceFactory(retrofitApi)
         pagedListbuilder = LivePagedListBuilder<Int, Users>(listUserDataSourceFactory, config)
+
     }
 
 
@@ -94,9 +96,13 @@ class UsersViewModel(
     }
 
     suspend fun postData() : LiveData<PagedList<Users>> {
+        val boundaryCallback = UsersBoundaryCallback(retrofitApi, db)
+
         val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
         //pagedListbuilder = LivePagedListBuilder(data, config).build()
 
-        return LivePagedListBuilder(data, config).build()
+        return LivePagedListBuilder(data, config)
+            .setBoundaryCallback(boundaryCallback)
+            .build()
     }
 }
