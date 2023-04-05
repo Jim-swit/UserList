@@ -23,7 +23,6 @@ class UsersBoundaryCallback(
             db.runInTransaction { db.usersDao().deleteAll() }
 
             val usersListData = async { webService.getUserListPaging(STARTPAGE, per_page) }
-
             usersListData.await().body()?.let {
                 db.runInTransaction {
                     db.usersDao().insertUsers(*it.toTypedArray())
@@ -34,7 +33,6 @@ class UsersBoundaryCallback(
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
-
             val usersListData = async {  webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5) }
 
             usersListData.await().body()?.let {

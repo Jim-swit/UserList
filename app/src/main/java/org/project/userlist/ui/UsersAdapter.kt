@@ -15,7 +15,6 @@ class UsersAdapter
 
     class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
         fun bind(currentItem: Users) {
-            Log.d("test", "Room : ${currentItem.login}")
             binding.recyclerTextView.text = currentItem.login
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)

@@ -53,9 +53,6 @@ class UsersFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
                 adapter.submitList(it)
-                if(it.isNotEmpty()) {
-                    Log.d("test", "Room : ${it[0]?.id}   ${it[0]?.login}")
-                }
             })
         }
 

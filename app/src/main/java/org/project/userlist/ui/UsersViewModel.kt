@@ -67,7 +67,6 @@ class UsersViewModel(
                 retrofitApi.getUser(name)
             }
             if (response.isSuccessful) {
-                //_test.postValue(response.body())
                 _test.value = response.body()
             } else {
                 Log.d("test", "response Fail")
