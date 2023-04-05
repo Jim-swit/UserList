@@ -19,6 +19,9 @@ import org.project.userlist.db.UsersBoundaryCallback
 import org.project.userlist.db.UsersDb
 import org.project.userlist.model.User
 import org.project.userlist.model.Users
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UsersViewModel(
     private val db: UsersDb
@@ -64,12 +67,19 @@ class UsersViewModel(
     fun getUser(name:String) {
         viewModelScope.launch {
            val response =  withContext(Dispatchers.IO) {
-                retrofitApi.getUser(name)
-            }
-            if (response.isSuccessful) {
-                _test.value = response.body()
-            } else {
-                Log.d("test", "response Fail")
+                retrofitApi.getUser(name).enqueue(object : Callback<User> {
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
+                        if (response.isSuccessful) {
+                            _test.value = response.body()
+                        } else {
+                            Log.d("test", "response Fail")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Log.d("test", "response Fail")
+                    }
+                })
             }
         }
     }

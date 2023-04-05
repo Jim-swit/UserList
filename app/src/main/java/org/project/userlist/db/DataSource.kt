@@ -22,22 +22,30 @@ class DataSource(
         callback: LoadInitialCallback<Users>
     ) {
         CoroutineScope(coroutineContext).launch {
-            val items = async {
-                apiService.getUserListPaging(
-                    since = 0,
-                    per_page = params.requestedLoadSize
-                )
-            }
-            items.await().body().let {
-                if(it.isNullOrEmpty()) {
-                    // TODO : EmptyAction
-                } else {
-                    this@DataSource.items.clear()
-                    this@DataSource.items.addAll(it)
-
-                    callback.onResult(it)
+            apiService.getUserListPaging(
+                since = 0,
+                per_page = params.requestedLoadSize
+            ).enqueue(object : retrofit2.Callback<List<Users>> {
+                override fun onFailure(call: retrofit2.Call<List<Users>>, t: Throwable) {
+                    // TODO : ErrorAction
                 }
-            }
+
+                override fun onResponse(
+                    call: retrofit2.Call<List<Users>>,
+                    response: retrofit2.Response<List<Users>>
+                ) {
+                    response.body().let {
+                        if (it.isNullOrEmpty()) {
+                            // TODO : EmptyAction
+                        } else {
+                            this@DataSource.items.clear()
+                            this@DataSource.items.addAll(it)
+
+                            callback.onResult(it)
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -45,22 +53,30 @@ class DataSource(
         CoroutineScope(coroutineContext).launch {
             val index = params.key + 1
 
-            val items = async {
-                apiService.getUserListPaging(
-                    since = index,
-                    per_page = params.requestedLoadSize
-                )
-            }
-            items.await()?.body().let {
-                if(it.isNullOrEmpty()) {
-                    // TODO : EmptyAction
-                } else {
-                    this@DataSource.items.clear()
-                    this@DataSource.items.addAll(it)
-
-                    callback.onResult(it)
+            apiService.getUserListPaging(
+                since = index,
+                per_page = params.requestedLoadSize
+            ).enqueue(object : retrofit2.Callback<List<Users>> {
+                override fun onFailure(call: retrofit2.Call<List<Users>>, t: Throwable) {
+                    // TODO : ErrorAction
                 }
-            }
+
+                override fun onResponse(
+                    call: retrofit2.Call<List<Users>>,
+                    response: retrofit2.Response<List<Users>>
+                ) {
+                    response.body().let {
+                        if (it.isNullOrEmpty()) {
+                            // TODO : EmptyAction
+                        } else {
+                            this@DataSource.items.clear()
+                            this@DataSource.items.addAll(it)
+
+                            callback.onResult(it)
+                        }
+                    }
+                }
+            })
         }
     }
 
