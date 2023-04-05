@@ -33,4 +33,12 @@ class UsersRepository(
     fun loadUsers(): LiveData<PagedList<Users>> {
         return pagedListbuilder.build()
     }
+
+    /*
+    // 특정 키로 이동
+    fun postKeyData(key: Int) : LiveData<PagedList<Users>> {
+        return pagedListbuilder.setInitialLoadKey(key).build()
+    }
+
+     */
 }
