@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.project.userlist.databinding.FragmentUserListBinding
-import org.project.userlist.db.UsersDb
-import org.project.userlist.model.Users
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -26,12 +26,7 @@ class UsersFragment : Fragment() {
 
     private var _binding: FragmentUserListBinding? = null
 
-    
-    // ViewModel에 넘겨줄 매개변수를 Koin으로 주입해준다면 아래 코드로 대체 가능
-    //private val userListViewModel: UsersViewModel by viewModels()
-    private val userListViewModel: UsersViewModel by viewModels {
-        UsersViewModel.UsersViewModelFactory(UsersDb.create(requireActivity().applicationContext))
-    }
+    private val userListViewModel: UsersViewModel by sharedViewModel()
 
     private val binding get() = _binding!!
 

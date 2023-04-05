@@ -19,12 +19,13 @@ import org.project.userlist.db.UsersBoundaryCallback
 import org.project.userlist.db.UsersDb
 import org.project.userlist.model.User
 import org.project.userlist.model.Users
+import org.project.userlist.repository.UsersRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class UsersViewModel(
-    private val db: UsersDb
+    private val usersRepository: UsersRepository
 ): ViewModel() {
 
     private val retrofitApi = Retrofit.instance
@@ -34,7 +35,7 @@ class UsersViewModel(
     private val config = ItemSourceFactory.providePagingConfig()
 
     //private val _usersList = MutableLiveData<PagedList<Users>>()
-    private val _usersList by lazy { pagedListbuilder.build() }
+    private val _usersList by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
     private val _test = MutableLiveData<User>()
@@ -43,7 +44,7 @@ class UsersViewModel(
 //    val usersList : LiveData<PagedList<Users>> = usersDao.getAll()
 
     init {
-        initViewModel()
+        //initViewModel()
         //viewModelScope.launch { postData() }
     }
 
@@ -54,12 +55,14 @@ class UsersViewModel(
         val listUserDataSourceFactory = ItemSourceFactory(retrofitApi)
         pagedListbuilder = LivePagedListBuilder<Int, Users>(listUserDataSourceFactory, config)
 
-         */
+
         val boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
         val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
 
         pagedListbuilder = LivePagedListBuilder(data, config)
             .setBoundaryCallback(boundaryCallback)
+
+         */
     }
 
 
@@ -95,13 +98,6 @@ class UsersViewModel(
         return pagedListbuilder.build()
     }
 
-    // ViewModel에 넘겨줄 매개변수가 있기에 Factory 구현
-    // Koin 적용 시 제거 가능
-    class UsersViewModelFactory(val db: UsersDb):ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return UsersViewModel(db) as T
-        }
-    }
     /* TODO: 사용자 등록
     fun insertUsersDb(users: Users) {
         db.runInTransaction {
