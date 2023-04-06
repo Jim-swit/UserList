@@ -24,14 +24,16 @@ class UsersBoundaryCallback(
         ItemSourceFactory(webService)
         CoroutineScope(Dispatchers.IO).launch {
 
-            db.runInTransaction { db.usersDao().deleteAll() }
+            // db.runInTransaction { db.usersDao().deleteAll() }
 
+            Log.d("test", "ZeroItems!!")
             webService.getUserListPaging(STARTPAGE, per_page).enqueue(createWebServiceCallback())
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
+            Log.d("test", "id : ${itemAtEnd.id}")
             webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5)
                 .enqueue(createWebServiceCallback())
         }

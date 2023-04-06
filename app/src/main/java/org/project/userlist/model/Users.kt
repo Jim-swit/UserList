@@ -12,5 +12,6 @@ data class Users(
     @SerializedName("login") val login:String,
     @SerializedName("node_id") val node_id:String,
     @SerializedName("url") val url:String,
-    @SerializedName("avatar_url") val avatar_url:String
+    @SerializedName("avatar_url") val avatar_url:String,
+    @SerializedName("favorite") var isChecked: Boolean = false
 )

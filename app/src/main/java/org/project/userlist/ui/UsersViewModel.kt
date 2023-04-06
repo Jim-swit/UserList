@@ -13,7 +13,9 @@ class UsersViewModel(
     private val _usersList by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
-
+    fun updateData() {
+        usersRepository.updateTest()
+    }
     fun reTryListner() {
         usersRepository.reTryListener()
     }

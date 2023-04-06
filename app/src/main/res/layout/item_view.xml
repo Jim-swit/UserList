@@ -17,6 +17,14 @@
         android:text="이름입니다."
         app:layout_constraintTop_toTopOf="@id/recycler_image_view"
         app:layout_constraintStart_toEndOf="@+id/recycler_image_view"/>
-
+    <ImageView
+        android:id="@+id/favorite_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/black"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.project.userlist.RetrofitGITAPI
 import org.project.userlist.db.ItemSourceFactory
 import org.project.userlist.db.UsersBoundaryCallback
@@ -26,6 +29,7 @@ class UsersRepository(
     private fun initBuilder() {
         boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
         val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
+
         pagedListbuilder = LivePagedListBuilder(data, config)
             .setBoundaryCallback(boundaryCallback)
 
@@ -41,6 +45,20 @@ class UsersRepository(
 
     fun reFreshListener() {
         boundaryCallback.reFreshListener()
+    }
+
+    fun updateTest() {
+        CoroutineScope(Dispatchers.IO).launch {
+            db.usersDao().updateUsers(
+                Users(
+                    login = "testName",
+                    id = "1",
+                    node_id = "MDQ6VXNlcjE=",
+                    avatar_url = "https://avatars.githubusercontent.com/u/1?v=4",
+                    url = "https://api.github.com/users/mojombo"
+                )
+            )
+        }
     }
 
     /*

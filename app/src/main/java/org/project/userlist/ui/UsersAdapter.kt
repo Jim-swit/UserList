@@ -3,10 +3,13 @@ package org.project.userlist.ui
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import org.project.userlist.R
 import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.Users
 
@@ -19,6 +22,17 @@ class UsersAdapter
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
                 .into(binding.recyclerImageView)
+            if(!currentItem.isChecked) {
+
+                binding.favoriteButton.setBackgroundColor(R.color.purple_200)
+            } else {
+                binding.favoriteButton.setColorFilter(R.color.black)
+            }
+
+            binding.favoriteButton.setOnClickListener {
+                currentItem.isChecked = !currentItem.isChecked
+                Log.d("test","Click!!!  ${currentItem.isChecked}")
+            }
         }
     }
 

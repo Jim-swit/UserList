@@ -54,7 +54,8 @@ class UsersFragment : Fragment() {
         }
 
         binding.buttonFirst.setOnClickListener {
-            userListViewModel.reTryListner()
+            //userListViewModel.reTryListner()
+            userListViewModel.updateData()
             Log.d("test", "click")
 
         }
