@@ -11,7 +11,7 @@ abstract class UsersDb : RoomDatabase() {
     companion object {
         const val STARTPAGE:Int = 0
         fun create(context: Context): UsersDb {
-            val databaseBuilder = if(true) {
+            val databaseBuilder = if(false) {
                 Room.inMemoryDatabaseBuilder(context, UsersDb::class.java)
             } else {
                 Room.databaseBuilder(context, UsersDb::class.java, "users.db")
