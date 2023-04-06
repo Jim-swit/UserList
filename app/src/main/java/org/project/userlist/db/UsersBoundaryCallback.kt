@@ -24,45 +24,33 @@ class UsersBoundaryCallback(
 
             db.runInTransaction { db.usersDao().deleteAll() }
 
-            webService.getUserListPaging(STARTPAGE, per_page).enqueue(
-                object : Callback<List<Users>> {
-                override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-                    Log.d("TAG", "onFailure: ${t.message}")
-                }
-
-                override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
-                    Log.d("TAG", "onResponse: ${response.body()}")
-                    response.body()?.let {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            db.runInTransaction {
-                                db.usersDao().insertUsers(*it.toTypedArray())
-                            }
-                        }
-                    }
-                }
-            })
+            webService.getUserListPaging(STARTPAGE, per_page).enqueue(createWebServiceCallback())
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
             webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5)
-                .enqueue(object : Callback<List<Users>> {
-                override fun onFailure(call: Call<List<Users>>, t: Throwable) {
-                    Log.d("TAG", "onFailure: ${t.message}")
-                }
+                .enqueue(createWebServiceCallback())
+        }
+    }
 
-                override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
-                    Log.d("TAG", "onResponse: ${response.body()}")
-                    response.body()?.let {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            db.runInTransaction {
-                                db.usersDao().insertUsers(*it.toTypedArray())
-                            }
+    private fun createWebServiceCallback(): Callback<List<Users>> {
+        return object : Callback<List<Users>> {
+            override fun onFailure(call: Call<List<Users>>, t: Throwable) {
+                Log.d("TAG", "onFailure: ${t.message}")
+            }
+
+            override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
+                Log.d("TAG", "onResponse: ${response.body()}")
+                response.body()?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.runInTransaction {
+                            db.usersDao().insertUsers(*it.toTypedArray())
                         }
                     }
                 }
-            })
+            }
         }
     }
 
