@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.project.userlist.RetrofitGITAPI
 import org.project.userlist.db.UsersDb.Companion.STARTPAGE
@@ -18,6 +17,9 @@ class UsersBoundaryCallback(
     private val db: UsersDb,
     private val per_page: Int
 ) : PagedList.BoundaryCallback<Users>() {
+
+    private lateinit var keepData:Users
+
     override fun onZeroItemsLoaded() {
         ItemSourceFactory(webService)
         CoroutineScope(Dispatchers.IO).launch {
@@ -43,8 +45,10 @@ class UsersBoundaryCallback(
 
             override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
                 Log.d("TAG", "onResponse: ${response.body()}")
+
                 response.body()?.let {
                     CoroutineScope(Dispatchers.IO).launch {
+                        keepData = it.last()
                         db.runInTransaction {
                             db.usersDao().insertUsers(*it.toTypedArray())
                         }
@@ -57,5 +61,12 @@ class UsersBoundaryCallback(
     // 최상단 이상의 데이터가 없으므로 필요성을 느끼지 못함.
     override fun onItemAtFrontLoaded(itemAtFront: Users) {
         super.onItemAtFrontLoaded(itemAtFront)
+    }
+
+    fun reTryListener() {
+        onItemAtEndLoaded(keepData)
+    }
+    fun reFreshListener() {
+        onZeroItemsLoaded()
     }
 }

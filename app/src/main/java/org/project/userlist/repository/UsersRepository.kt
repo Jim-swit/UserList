@@ -15,6 +15,7 @@ class UsersRepository(
     private val retrofitApi: RetrofitGITAPI
 ) {
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
+    private lateinit var boundaryCallback: UsersBoundaryCallback
     private val config = ItemSourceFactory.providePagingConfig()
 
     init {
@@ -23,15 +24,23 @@ class UsersRepository(
 
 
     private fun initBuilder() {
-        val boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
+        boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
         val data: DataSource.Factory<Int, Users> = db.usersDao().getAll()
-
         pagedListbuilder = LivePagedListBuilder(data, config)
             .setBoundaryCallback(boundaryCallback)
+
     }
 
     fun loadUsers(): LiveData<PagedList<Users>> {
         return pagedListbuilder.build()
+    }
+
+    fun reTryListener() {
+        boundaryCallback.reTryListener()
+    }
+
+    fun reFreshListener() {
+        boundaryCallback.reFreshListener()
     }
 
     /*
