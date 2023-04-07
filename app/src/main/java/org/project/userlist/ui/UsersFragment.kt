@@ -26,9 +26,10 @@ class UsersFragment : Fragment() {
 
     private lateinit var adapter: UsersAdapter
 
+    private val userListViewModel: UsersViewModel by sharedViewModel()
+
     private var _binding: FragmentUserListBinding? = null
 
-    private val userListViewModel: UsersViewModel by sharedViewModel()
 
     private val binding get() = _binding!!
 
@@ -55,7 +56,6 @@ class UsersFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             //userListViewModel.reTryListner()
-            userListViewModel.updateData()
             Log.d("test", "click")
 
         }

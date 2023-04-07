@@ -23,17 +23,12 @@ class UsersBoundaryCallback(
     override fun onZeroItemsLoaded() {
         ItemSourceFactory(webService)
         CoroutineScope(Dispatchers.IO).launch {
-
-            // db.runInTransaction { db.usersDao().deleteAll() }
-
-            Log.d("test", "ZeroItems!!")
             webService.getUserListPaging(STARTPAGE, per_page).enqueue(createWebServiceCallback())
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("test", "id : ${itemAtEnd.id}")
             webService.getUserListPaging(itemAtEnd.id.toInt() + 1, 5)
                 .enqueue(createWebServiceCallback())
         }
@@ -46,8 +41,6 @@ class UsersBoundaryCallback(
             }
 
             override fun onResponse(call: Call<List<Users>>, response: Response<List<Users>>) {
-                Log.d("TAG", "onResponse: ${response.body()}")
-
                 response.body()?.let {
                     CoroutineScope(Dispatchers.IO).launch {
                         keepData = it.last()

@@ -1,26 +1,23 @@
 package org.project.userlist.ui
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.project.userlist.R
 import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.Users
 
-class UsersAdapter(
+class BookMarkUsersAdapter (
     private var onItemClicked: ((updatedUsers: Users) -> Unit)
 )
-    : PagedListAdapter<Users, UsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
+    : PagedListAdapter<Users, BookMarkUsersAdapter.BookMarkUserListViewHolder>(DIFF_CALLBACK) {
 
-    inner class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
-        fun bind(currentItem: Users, position: Int) {
+    inner class BookMarkUserListViewHolder(private val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
+        fun bind(currentItem: Users) {
             binding.recyclerTextView.text = currentItem.login
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
@@ -29,24 +26,18 @@ class UsersAdapter(
             binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context,
                 if(currentItem.isChecked) R.color.purple_500 else R.color.black)
             )
-
-            binding.favoriteButton.setOnClickListener {
-                currentItem.isChecked = !currentItem.isChecked
-                onItemClicked(currentItem)
-                notifyItemChanged(position)
-            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookMarkUserListViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserListViewHolder(binding)
+        return BookMarkUserListViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BookMarkUserListViewHolder, position: Int) {
         val currentItem = getItem(position)
         if(currentItem != null) {
-            holder.bind(currentItem, position)
+            holder.bind(currentItem)
         }
     }
 
@@ -57,7 +48,6 @@ class UsersAdapter(
 
             override fun areContentsTheSame(oldItem: Users, newItem: Users) =
                 oldItem == newItem
-                //(oldItem == newItem || oldItem == newItem.apply { isChecked = !isChecked })
         }
     }
 }

@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "Bookmark_User")
+@Entity(tableName = "User")
 data class User(
     @PrimaryKey
     @SerializedName("id") val id: String,                   // PrimaryKey로 중복 X

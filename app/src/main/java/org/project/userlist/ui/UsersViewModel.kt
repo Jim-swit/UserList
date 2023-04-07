@@ -13,9 +13,10 @@ class UsersViewModel(
     private val _usersList by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
-    fun updateData() {
-        usersRepository.updateTest()
-    }
+
+
+    private val _bookMarkUsersList by lazy { usersRepository.loadBookMarkUsers() }
+    val bookMarkUsersList:LiveData<PagedList<Users>> get() = _bookMarkUsersList
 
     fun updateBookmark(updatedUsers:Users) {
         usersRepository.updateUsers(updatedUsers)

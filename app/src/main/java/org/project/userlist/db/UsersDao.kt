@@ -13,10 +13,17 @@ import org.project.userlist.model.Users
 interface UsersDao {
 
     @Query("SELECT * FROM Users")
-    fun getAll(): DataSource.Factory<Int, Users>
+    fun getAllUsers(): DataSource.Factory<Int, Users>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertUsers(vararg users: Users)
+
+    @Update
+    fun updateUsers(vararg users:Users)
+
+
+    @Query("SELECT * FROM Users WHERE isChecked = 1")
+    fun getAllBookMarkUsers(): DataSource.Factory<Int, Users>
 
 
     @Delete
@@ -24,7 +31,4 @@ interface UsersDao {
 
     @Query("DELETE FROM Users")
     fun deleteAll()
-
-    @Update
-    fun updateUsers(vararg users:Users)
 }
