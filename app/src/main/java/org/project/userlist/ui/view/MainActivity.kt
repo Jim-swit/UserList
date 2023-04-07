@@ -1,4 +1,4 @@
-package org.project.userlist.ui
+package org.project.userlist.ui.view
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
