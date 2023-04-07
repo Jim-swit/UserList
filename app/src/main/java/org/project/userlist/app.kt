@@ -9,6 +9,7 @@ import org.project.userlist.db.UsersDb
 import org.project.userlist.repository.UsersRepository
 import org.project.userlist.ui.UsersViewModel
 import org.project.userlist.api.Retrofit
+import org.project.userlist.ui.BookMarkUsersViewModel
 
 class app :Application() {
     override fun onCreate() {
@@ -25,5 +26,6 @@ class app :Application() {
         single { UsersRepository(retrofitApi = get(), db = get()) }
 
         factory { UsersViewModel(usersRepository = get()) }
+        factory { BookMarkUsersViewModel(usersRepository = get()) }
     }
 }

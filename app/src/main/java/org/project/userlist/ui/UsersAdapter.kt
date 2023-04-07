@@ -26,15 +26,14 @@ class UsersAdapter(
                 .load(currentItem.avatar_url)
                 .into(binding.recyclerImageView)
 
-            if(!currentItem.isChecked) {
-                binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.purple_500))
-            } else {
-                binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.black))
-            }
+            binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context,
+                if(currentItem.bookMarked) R.color.purple_500 else R.color.black
+                ))
 
             binding.favoriteButton.setOnClickListener {
-                currentItem.isChecked = !currentItem.isChecked
+                currentItem.bookMarked = !currentItem.bookMarked
                 onItemClicked(currentItem)
+                notifyItemChanged(position)
             }
         }
     }

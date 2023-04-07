@@ -7,20 +7,20 @@ import androidx.room.Query
 import androidx.paging.DataSource
 import androidx.room.OnConflictStrategy
 import androidx.room.Update
+import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
 @Dao
 interface UsersDao {
 
     @Query("SELECT * FROM Users")
-    fun getAll(): DataSource.Factory<Int, Users>
+    fun getUsersAll(): DataSource.Factory<Int, Users>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertUsers(vararg users: Users)
 
-
     @Delete
-    fun delete(users: Users)
+    fun deleteUsers(users: Users)
 
     @Query("DELETE FROM Users")
     fun deleteAll()

@@ -55,9 +55,7 @@ class UsersFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             //userListViewModel.reTryListner()
-            userListViewModel.updateData()
             Log.d("test", "click")
-
         }
 
         binding.buttonInsert.setOnClickListener {
@@ -67,8 +65,12 @@ class UsersFragment : Fragment() {
     private fun initAdapter() {
         val recyclerView = binding.recyclerView
 
-        adapter = UsersAdapter() {
-            userListViewModel.updateBookmark(it)
+        adapter = UsersAdapter() {users ->
+            if(users.bookMarked) {
+                userListViewModel.insertBookMarkUsers(users)
+            } else {
+                userListViewModel.deleteBookMarkUsers(users)
+            }
         }
 
         recyclerView.adapter = adapter

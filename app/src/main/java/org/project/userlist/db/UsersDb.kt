@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
-@Database(entities = [Users::class], version = 1, exportSchema = false)
+@Database(entities = [Users::class, BookMarkUsers::class], version = 2, exportSchema = false)
 abstract class UsersDb : RoomDatabase() {
     companion object {
         const val STARTPAGE:Int = 0
@@ -14,7 +15,7 @@ abstract class UsersDb : RoomDatabase() {
             val databaseBuilder = if(false) {
                 Room.inMemoryDatabaseBuilder(context, UsersDb::class.java)
             } else {
-                Room.databaseBuilder(context, UsersDb::class.java, "users.db")
+                Room.databaseBuilder(context, UsersDb::class.java, "user.db")
             }
             return databaseBuilder
                 .fallbackToDestructiveMigration()
@@ -22,4 +23,5 @@ abstract class UsersDb : RoomDatabase() {
         }
     }
     abstract fun usersDao() : UsersDao
+    abstract fun bookMarkUsersDao() : BookMarkUsersDao
 }
