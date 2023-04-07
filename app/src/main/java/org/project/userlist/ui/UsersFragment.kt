@@ -47,7 +47,7 @@ class UsersFragment : Fragment() {
 
         initAdapter()
 
-        lifecycleScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
                 adapter.submitList(it)
             })
@@ -67,7 +67,9 @@ class UsersFragment : Fragment() {
     private fun initAdapter() {
         val recyclerView = binding.recyclerView
 
-        adapter = UsersAdapter()
+        adapter = UsersAdapter() {
+            userListViewModel.updateBookmark(it)
+        }
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
@@ -77,7 +79,6 @@ class UsersFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
 
 

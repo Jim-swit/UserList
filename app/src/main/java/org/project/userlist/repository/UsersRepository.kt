@@ -47,6 +47,12 @@ class UsersRepository(
         boundaryCallback.reFreshListener()
     }
 
+    fun updateUsers(updatedUsers:Users) {
+        CoroutineScope(Dispatchers.IO).launch {
+            db.usersDao().updateUsers(updatedUsers)
+        }
+    }
+
     fun updateTest() {
         CoroutineScope(Dispatchers.IO).launch {
             db.usersDao().updateUsers(

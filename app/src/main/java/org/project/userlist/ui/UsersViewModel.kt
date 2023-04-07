@@ -16,6 +16,10 @@ class UsersViewModel(
     fun updateData() {
         usersRepository.updateTest()
     }
+
+    fun updateBookmark(updatedUsers:Users) {
+        usersRepository.updateUsers(updatedUsers)
+    }
     fun reTryListner() {
         usersRepository.reTryListener()
     }
