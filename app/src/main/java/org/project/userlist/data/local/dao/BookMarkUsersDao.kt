@@ -1,4 +1,4 @@
-package org.project.userlist.db
+package org.project.userlist.data.local.dao
 
 import androidx.paging.DataSource
 import androidx.room.Dao

@@ -1,4 +1,4 @@
-package org.project.userlist.ui
+package org.project.userlist.ui.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

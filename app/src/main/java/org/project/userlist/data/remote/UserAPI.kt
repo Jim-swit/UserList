@@ -1,4 +1,4 @@
-package org.project.userlist
+package org.project.userlist.data.remote
 
 import org.project.userlist.model.User
 import org.project.userlist.model.Users

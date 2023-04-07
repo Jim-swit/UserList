@@ -1,8 +1,8 @@
-package org.project.userlist.db
+package org.project.userlist.repository
 
 import androidx.paging.ItemKeyedDataSource
 import kotlinx.coroutines.*
-import org.project.userlist.RetrofitGITAPI
+import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.model.Users
 import kotlin.coroutines.CoroutineContext
 

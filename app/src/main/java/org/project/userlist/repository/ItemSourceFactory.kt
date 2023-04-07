@@ -1,8 +1,8 @@
-package org.project.userlist.db
+package org.project.userlist.repository
 
 import androidx.paging.DataSource
 import androidx.paging.PagedList
-import org.project.userlist.RetrofitGITAPI
+import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.model.Users
 
 class ItemSourceFactory(

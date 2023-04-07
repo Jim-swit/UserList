@@ -7,11 +7,8 @@ import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.project.userlist.RetrofitGITAPI
-import org.project.userlist.db.BookMarkUsersDao
-import org.project.userlist.db.ItemSourceFactory
-import org.project.userlist.db.UsersBoundaryCallback
-import org.project.userlist.db.UsersDb
+import org.project.userlist.data.remote.RetrofitGITAPI
+import org.project.userlist.data.local.UsersDb
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 

@@ -1,10 +1,9 @@
-package org.project.userlist.api
+package org.project.userlist.data.remote
 
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.project.userlist.BuildConfig
-import org.project.userlist.RetrofitGITAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory

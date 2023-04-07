@@ -1,4 +1,4 @@
-package org.project.userlist.db
+package org.project.userlist.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,7 +7,6 @@ import androidx.room.Query
 import androidx.paging.DataSource
 import androidx.room.OnConflictStrategy
 import androidx.room.Update
-import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
 @Dao

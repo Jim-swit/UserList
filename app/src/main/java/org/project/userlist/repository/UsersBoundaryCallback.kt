@@ -1,12 +1,13 @@
-package org.project.userlist.db
+package org.project.userlist.repository
 
 import android.util.Log
 import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.project.userlist.RetrofitGITAPI
-import org.project.userlist.db.UsersDb.Companion.STARTPAGE
+import org.project.userlist.data.remote.RetrofitGITAPI
+import org.project.userlist.data.local.UsersDb
+import org.project.userlist.data.local.UsersDb.Companion.STARTPAGE
 import org.project.userlist.model.Users
 import retrofit2.Call
 import retrofit2.Callback

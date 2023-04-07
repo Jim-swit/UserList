@@ -1,17 +1,13 @@
-package org.project.userlist.ui
+package org.project.userlist.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import org.project.userlist.R
 import org.project.userlist.databinding.ItemBookMarkViewBinding
-import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.BookMarkUsers
-import org.project.userlist.model.Users
 
 class BookMarkUsersAdapter (
     private var onItemClicked: ((updatedUsers: BookMarkUsers) -> Unit)
