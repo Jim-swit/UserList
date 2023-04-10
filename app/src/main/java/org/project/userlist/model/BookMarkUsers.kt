@@ -1,10 +1,14 @@
-package org.project.userlist
+package org.project.userlist.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class ListUser(
+@Entity(tableName = "BookMarkUsers")
+data class BookMarkUsers(
+    @PrimaryKey
+    @SerializedName("id") val id: String,
     @SerializedName("login") val login:String,
-    @SerializedName("id") val id:String,
     @SerializedName("node_id") val node_id:String,
     @SerializedName("url") val url:String,
     @SerializedName("avatar_url") val avatar_url:String
