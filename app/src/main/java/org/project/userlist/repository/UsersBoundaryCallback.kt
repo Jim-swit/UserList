@@ -8,7 +8,8 @@ import kotlinx.coroutines.launch
 import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
 import org.project.userlist.data.local.UsersDb.Companion.STARTPAGE
-import org.project.userlist.model.ApiCall
+import org.project.userlist.data.remote.ApiCall
+import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.Users
 
 class UsersBoundaryCallback(
@@ -27,15 +28,15 @@ class UsersBoundaryCallback(
     override fun onZeroItemsLoaded() {
         CoroutineScope(Dispatchers.IO).launch {
             when(val result = ApiCall { webService.getUserListPaging(STARTPAGE, per_page) }) {
-                is org.project.userlist.model.ApiResult.ApiSuccess -> {
+                is ApiResult.ApiSuccess -> {
                     result.data?.let { usersList ->
                         db.usersDao().insertUsers(*usersList.toTypedArray())
                     }
                 }
-                is org.project.userlist.model.ApiResult.ApiError -> {
+                is ApiResult.ApiError -> {
                     Log.d(TAG, "onFailure: ${result.message}")
                 }
-                is org.project.userlist.model.ApiResult.ApiException -> {
+                is ApiResult.ApiException -> {
                     Log.d(TAG, "onFailure: ${result.exception.message}")
                 }
             }
@@ -45,16 +46,16 @@ class UsersBoundaryCallback(
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
             when(val result = ApiCall { webService.getUserListPaging(itemAtEnd.id.toInt()+1, per_page) }) {
-                is org.project.userlist.model.ApiResult.ApiSuccess -> {
+                is ApiResult.ApiSuccess -> {
                     result.data?.let { usersList ->
                         keepData = usersList.last()
                         db.usersDao().insertUsers(*usersList.toTypedArray())
                     }
                 }
-                is org.project.userlist.model.ApiResult.ApiError -> {
+                is ApiResult.ApiError -> {
                     Log.d(TAG, "onFailure: ${result.message}")
                 }
-                is org.project.userlist.model.ApiResult.ApiException -> {
+                is ApiResult.ApiException -> {
                     Log.d(TAG, "onFailure: ${result.exception.message}")
                 }
             }

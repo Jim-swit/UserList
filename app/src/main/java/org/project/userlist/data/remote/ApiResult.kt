@@ -1,4 +1,4 @@
-package org.project.userlist.model
+package org.project.userlist.data.remote
 
 import retrofit2.Response
 

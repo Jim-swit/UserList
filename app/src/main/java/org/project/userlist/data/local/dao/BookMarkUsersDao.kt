@@ -11,7 +11,7 @@ import org.project.userlist.model.BookMarkUsers
 @Dao
 interface BookMarkUsersDao {
 
-    @Query("SELECT * FROM BookMarkUsers")
+    @Query("SELECT * FROM BookMarkUsers ORDER BY id ASC")
     fun getBookMarkUsersAll(): DataSource.Factory<Int, BookMarkUsers>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

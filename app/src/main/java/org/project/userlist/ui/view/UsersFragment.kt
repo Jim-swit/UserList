@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -44,7 +45,7 @@ class UsersFragment : Fragment() {
 
         initAdapter()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
                 adapter.submitList(it)
             })
@@ -52,7 +53,6 @@ class UsersFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             userListViewModel.reTryListner()
-            Log.d("test", "click")
         }
 
         binding.buttonInsert.setOnClickListener {
@@ -63,12 +63,10 @@ class UsersFragment : Fragment() {
         val recyclerView = binding.recyclerView
 
         adapter = UsersAdapter() {users ->
-            if(users.bookMarked) {
-                CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
+                if (users.bookMarked) {
                     userListViewModel.insertBookMarkUsers(users)
-                }
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
+                } else {
                     userListViewModel.deleteBookMarkUsers(users)
                 }
             }

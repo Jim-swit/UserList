@@ -52,10 +52,6 @@ class BookmarkUserListFragment : Fragment() {
                 adapter.submitList(it)
             })
         }
-
-        binding.testButton.setOnClickListener {
-            bookMarkUserListViewModel.boockMarkUsersList
-        }
     }
 
     private fun initAdapter() {

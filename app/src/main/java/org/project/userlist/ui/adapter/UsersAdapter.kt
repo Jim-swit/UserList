@@ -1,5 +1,6 @@
 package org.project.userlist.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -28,6 +29,7 @@ class UsersAdapter(
                 ))
 
             binding.favoriteButton.setOnClickListener {
+                Log.d("test", "id : ${currentItem.id}")
                 currentItem.bookMarked = !currentItem.bookMarked
                 onItemClicked(currentItem)
                 notifyItemChanged(position)
