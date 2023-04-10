@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view
+package org.project.userlist.ui.view.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

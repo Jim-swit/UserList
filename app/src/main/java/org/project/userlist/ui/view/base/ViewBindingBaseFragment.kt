@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view
+package org.project.userlist.ui.view.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-abstract class ViewBindingFragment<T: ViewBinding> : Fragment() {
+abstract class ViewBindingBaseFragment<T: ViewBinding> : Fragment() {
     private var _binding: T? = null
     val binding get() = _binding!!
 

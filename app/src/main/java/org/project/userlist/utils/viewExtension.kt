@@ -1,4 +1,4 @@
-package org.project.userlist.extension
+package org.project.userlist.utils
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity

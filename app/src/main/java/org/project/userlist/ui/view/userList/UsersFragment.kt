@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view
+package org.project.userlist.ui.view.userList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,8 +12,9 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.project.userlist.databinding.FragmentUserListBinding
 import org.project.userlist.ui.adapter.UsersAdapter
+import org.project.userlist.ui.view.base.ViewBindingBaseFragment
 
-class UsersFragment : ViewBindingFragment<FragmentUserListBinding>() {
+class UsersFragment : ViewBindingBaseFragment<FragmentUserListBinding>() {
 
     private lateinit var adapter: UsersAdapter
 
