@@ -15,8 +15,8 @@ interface BookMarkUsersDao {
     fun getBookMarkUsersAll(): DataSource.Factory<Int, BookMarkUsers>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertBookMarkUsers(vararg bookMarkUsers: BookMarkUsers)
+    suspend fun insertBookMarkUsers(vararg bookMarkUsers: BookMarkUsers)
 
     @Delete
-    fun deleteBookMarkUsers(bookMarkUsers: BookMarkUsers)
+    suspend fun deleteBookMarkUsers(bookMarkUsers: BookMarkUsers)
 }

@@ -14,7 +14,7 @@ class BookMarkUsersViewModel(
     private val _bookMarkUsersList by lazy { usersRepository.loadBookMarkUsers() }
     val boockMarkUsersList: LiveData<PagedList<BookMarkUsers>> get() = _bookMarkUsersList
 
-    fun deleteBookMarkUsers(bookMarkUsers:BookMarkUsers) {
+    suspend fun deleteBookMarkUsers(bookMarkUsers:BookMarkUsers) {
         usersRepository.deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers)
     }
 }

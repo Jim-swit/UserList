@@ -61,8 +61,11 @@ class BookmarkUserListFragment : Fragment() {
     private fun initAdapter() {
         val recyclerView = binding.bookMarkRecyclerView
 
+
         adapter = BookMarkUsersAdapter() { bookMarkUsers ->
-            bookMarkUserListViewModel.deleteBookMarkUsers(bookMarkUsers)
+            CoroutineScope(Dispatchers.IO).launch {
+                bookMarkUserListViewModel.deleteBookMarkUsers(bookMarkUsers)
+            }
         }
 
         recyclerView.adapter = adapter

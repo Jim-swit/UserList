@@ -15,15 +15,18 @@ interface UsersDao {
     @Query("SELECT * FROM Users")
     fun getUsersAll(): DataSource.Factory<Int, Users>
 
+    @Query("SELECT * FROM Users ORDER BY id DESC LIMIT 1")
+    suspend fun getUsersLast(): Users
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertUsers(vararg users: Users)
+    suspend fun insertUsers(vararg users: Users)
 
     @Delete
-    fun deleteUsers(users: Users)
+    suspend fun deleteUsers(users: Users)
 
     @Query("DELETE FROM Users")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Update
-    fun updateUsers(vararg users:Users)
+    suspend fun updateUsers(vararg users:Users)
 }

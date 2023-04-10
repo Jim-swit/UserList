@@ -19,12 +19,11 @@ class UsersRepository(
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
-    private val config = ItemSourceFactory.providePagingConfig()
+    private val config = providePagingConfig()
 
     init {
         initBuilder()
     }
-
 
     private fun initBuilder() {
         boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
@@ -53,49 +52,46 @@ class UsersRepository(
         boundaryCallback.reFreshListener()
     }
 
-    private fun updateUsers(updatedUsers:Users) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private suspend fun updateUsers(updatedUsers:Users) {
             db.usersDao().updateUsers(updatedUsers)
-        }
     }
 
-    private fun insertBookMarkUsers(users:Users) {
-        val bookMarkUsers = BookMarkUsers(
+    private suspend fun insertBookMarkUsers(users:Users) {
+        BookMarkUsers(
             id = users.id,
             login = users.login,
             node_id = users.node_id,
             url = users.url,
             avatar_url = users.avatar_url
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            db.bookMarkUsersDao().insertBookMarkUsers(bookMarkUsers)
+        ).let {
+            db.bookMarkUsersDao().insertBookMarkUsers(it)
         }
+
         updateUsers(users)
     }
 
-    private fun deleteBookMarkUsers(users:Users) {
-        val bookMarkUsers = BookMarkUsers(
+    private suspend fun deleteBookMarkUsers(users:Users) {
+        BookMarkUsers(
             id = users.id,
             login = users.login,
             node_id = users.node_id,
             url = users.url,
             avatar_url = users.avatar_url
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            db.bookMarkUsersDao().deleteBookMarkUsers(bookMarkUsers)
+        ).let {
+            db.bookMarkUsersDao().deleteBookMarkUsers(it)
         }
         updateUsers(users)
     }
 
-    fun insertBookMarkUsersFromUsers(users:Users) {
+    suspend fun insertBookMarkUsersFromUsers(users:Users) {
         insertBookMarkUsers(users)
     }
 
-    fun deleteBookMarkUsersFromUsers(users:Users) {
+    suspend fun deleteBookMarkUsersFromUsers(users:Users) {
         deleteBookMarkUsers(users)
     }
 
-    fun deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers: BookMarkUsers) {
+    suspend fun deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers: BookMarkUsers) {
         deleteBookMarkUsers(
             bookMarkUsers.let {
                 Users(
@@ -118,4 +114,13 @@ class UsersRepository(
     }
 
      */
+    companion object {
+        fun providePagingConfig() : PagedList.Config = PagedList.Config.Builder()
+            .setEnablePlaceholders(true)
+            .setInitialLoadSizeHint(5) // 최초 로드 사이즈
+            .setPageSize(5) // 각 페이지의 크기
+            .setPrefetchDistance(5) // 미리 로드할 거리(개수) 정의
+            .build()
+    }
 }
+

@@ -13,11 +13,11 @@ class UsersViewModel(
     private val _usersList:LiveData<PagedList<Users>> by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
-    fun insertBookMarkUsers(users:Users) {
+    suspend fun insertBookMarkUsers(users:Users) {
         usersRepository.insertBookMarkUsersFromUsers(users)
     }
 
-    fun deleteBookMarkUsers(users:Users) {
+    suspend fun deleteBookMarkUsers(users:Users) {
         usersRepository.deleteBookMarkUsersFromUsers(users)
     }
 

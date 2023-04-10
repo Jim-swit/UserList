@@ -51,7 +51,7 @@ class UsersFragment : Fragment() {
         }
 
         binding.buttonFirst.setOnClickListener {
-            //userListViewModel.reTryListner()
+            userListViewModel.reTryListner()
             Log.d("test", "click")
         }
 
@@ -64,9 +64,13 @@ class UsersFragment : Fragment() {
 
         adapter = UsersAdapter() {users ->
             if(users.bookMarked) {
-                userListViewModel.insertBookMarkUsers(users)
+                CoroutineScope(Dispatchers.IO).launch {
+                    userListViewModel.insertBookMarkUsers(users)
+                }
             } else {
-                userListViewModel.deleteBookMarkUsers(users)
+                CoroutineScope(Dispatchers.IO).launch {
+                    userListViewModel.deleteBookMarkUsers(users)
+                }
             }
         }
 
