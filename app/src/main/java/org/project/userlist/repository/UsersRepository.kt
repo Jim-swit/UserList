@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
 import org.project.userlist.model.BookMarkUsers
@@ -58,10 +55,8 @@ class UsersRepository(
 
     private suspend fun insertBookMarkUsers(users:Users) {
         BookMarkUsers(
-            id = users.id,
-            login = users.login,
-            node_id = users.node_id,
-            url = users.url,
+            id = users.id, login = users.login,
+            node_id = users.node_id, url = users.url,
             avatar_url = users.avatar_url
         ).let {
             db.bookMarkUsersDao().insertBookMarkUsers(it)
@@ -72,10 +67,8 @@ class UsersRepository(
 
     private suspend fun deleteBookMarkUsers(users:Users) {
         BookMarkUsers(
-            id = users.id,
-            login = users.login,
-            node_id = users.node_id,
-            url = users.url,
+            id = users.id, login = users.login,
+            node_id = users.node_id, url = users.url,
             avatar_url = users.avatar_url
         ).let {
             db.bookMarkUsersDao().deleteBookMarkUsers(it)
@@ -95,12 +88,9 @@ class UsersRepository(
         deleteBookMarkUsers(
             bookMarkUsers.let {
                 Users(
-                    id = it.id,
-                    login = it.login,
-                    node_id = it.node_id,
-                    url = it.url,
-                    avatar_url = it.avatar_url,
-                    bookMarked = false
+                    id = it.id, login = it.login,
+                    node_id = it.node_id, url = it.url,
+                    avatar_url = it.avatar_url, bookMarked = false
                 )
             }
         )

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -16,39 +17,27 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.project.userlist.databinding.FragmentBookmarkUserListBinding
 import org.project.userlist.ui.adapter.BookMarkUsersAdapter
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
-class BookmarkUserListFragment : Fragment() {
+class BookmarkUserListFragment : ViewBindingFragment<FragmentBookmarkUserListBinding>() {
 
 
     private lateinit var adapter: BookMarkUsersAdapter
 
     private val bookMarkUserListViewModel: BookMarkUsersViewModel by sharedViewModel()
 
-    private var _binding: FragmentBookmarkUserListBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentBookmarkUserListBinding.inflate(inflater, container, false)
-        return binding.root
-
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentBookmarkUserListBinding {
+        return FragmentBookmarkUserListBinding.inflate(inflater, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
+    override fun initView() {
         initAdapter()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             bookMarkUserListViewModel.boockMarkUsersList.observe(this@BookmarkUserListFragment.viewLifecycleOwner, Observer {
-                Log.d("test", "book Data : ${it.size}")
                 adapter.submitList(it)
             })
         }
@@ -66,10 +55,5 @@ class BookmarkUserListFragment : Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
