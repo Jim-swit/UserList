@@ -1,21 +1,22 @@
-package org.project.userlist
+package org.project.userlist.data.remote
 
 import org.project.userlist.model.User
 import org.project.userlist.model.Users
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitGITAPI {
     @GET("users")
-    fun getUserListPaging(
+    suspend fun getUserListPaging(
         @Query("since") since: Int,
         @Query("per_page") per_page: Int
-    ): Call<List<Users>>
+    ): Response<List<Users>>
 
     @GET("users/{login}")
-    fun getUser(
+    suspend fun getUser(
         @Path("login") login: String
-    ): Call<User>
+    ): Response<User>
 }

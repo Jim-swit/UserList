@@ -4,7 +4,8 @@
     <!-- Strings used for fragments for navigation -->
     <string name="user_list_fragment_label">UserList Fragment</string>
     <string name="bookmark_user_list_fragment_label">Bookmark UserList Fragment</string>
-    <string name="next">Next</string>
+    <string name="users_recyclerview_retry">reTry</string>
+    <string name="users_recyclerview_refresh">reFresh</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>

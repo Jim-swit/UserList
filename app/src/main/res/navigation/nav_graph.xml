@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/UserListFragment"
-        android:name="org.project.userlist.ui.UsersFragment"
+        android:name="org.project.userlist.ui.view.userList.UsersFragment"
         android:label="@string/user_list_fragment_label"
         tools:layout="@layout/fragment_user_list">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/BookmarkUserListFragment"
-        android:name="org.project.userlist.ui.BookmarkUserListFragment"
+        android:name="org.project.userlist.ui.view.userList.BookmarkUserListFragment"
         android:label="@string/bookmark_user_list_fragment_label"
         tools:layout="@layout/fragment_bookmark_user_list">
 

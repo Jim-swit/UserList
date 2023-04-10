@@ -1,4 +1,4 @@
-package org.project.userlist.ui
+package org.project.userlist.ui.view.userList
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +10,17 @@ class UsersViewModel(
     private val usersRepository: UsersRepository
 ): ViewModel() {
 
-    private val _usersList by lazy { usersRepository.loadUsers() }
+    private val _usersList:LiveData<PagedList<Users>> by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
-    fun updateData() {
-        usersRepository.updateTest()
+    suspend fun insertBookMarkUsers(users:Users) {
+        usersRepository.insertBookMarkUsersFromUsers(users)
     }
+
+    suspend fun deleteBookMarkUsers(users:Users) {
+        usersRepository.deleteBookMarkUsersFromUsers(users)
+    }
+
     fun reTryListner() {
         usersRepository.reTryListener()
     }

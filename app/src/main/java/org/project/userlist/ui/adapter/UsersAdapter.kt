@@ -1,10 +1,9 @@
-package org.project.userlist.ui
+package org.project.userlist.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -13,25 +12,27 @@ import org.project.userlist.R
 import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.Users
 
-class UsersAdapter
+class UsersAdapter(
+    private var onItemClicked: ((updatedUsers: Users) -> Unit)
+)
     : PagedListAdapter<Users, UsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
 
-    class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
-        fun bind(currentItem: Users) {
+    inner class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
+        fun bind(currentItem: Users, position: Int) {
             binding.recyclerTextView.text = currentItem.login
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
                 .into(binding.recyclerImageView)
-            if(!currentItem.isChecked) {
 
-                binding.favoriteButton.setBackgroundColor(R.color.purple_200)
-            } else {
-                binding.favoriteButton.setColorFilter(R.color.black)
-            }
+            binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context,
+                if(currentItem.bookMarked) R.color.purple_500 else R.color.black
+                ))
 
             binding.favoriteButton.setOnClickListener {
-                currentItem.isChecked = !currentItem.isChecked
-                Log.d("test","Click!!!  ${currentItem.isChecked}")
+                Log.d("test", "id : ${currentItem.id}")
+                currentItem.bookMarked = !currentItem.bookMarked
+                onItemClicked(currentItem)
+                notifyItemChanged(position)
             }
         }
     }
@@ -43,9 +44,8 @@ class UsersAdapter
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
         val currentItem = getItem(position)
-
         if(currentItem != null) {
-            holder.bind(currentItem)
+            holder.bind(currentItem, position)
         }
     }
 
@@ -56,6 +56,7 @@ class UsersAdapter
 
             override fun areContentsTheSame(oldItem: Users, newItem: Users) =
                 oldItem == newItem
+                //(oldItem == newItem || oldItem == newItem.apply { isChecked = !isChecked })
         }
     }
 }
