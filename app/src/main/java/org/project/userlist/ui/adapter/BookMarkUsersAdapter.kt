@@ -10,7 +10,7 @@ import org.project.userlist.databinding.ItemBookMarkViewBinding
 import org.project.userlist.model.BookMarkUsers
 
 class BookMarkUsersAdapter (
-    private var onItemClicked: ((updatedUsers: BookMarkUsers) -> Unit)
+    private var onItemClicked: ((updatedUsers: BookMarkUsers, position: Int) -> Unit)
 )
     : PagedListAdapter<BookMarkUsers, BookMarkUsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
 
@@ -21,7 +21,7 @@ class BookMarkUsersAdapter (
                 .load(currentItem.avatar_url)
                 .into(binding.recyclerImageView)
             binding.deleteBtn.setOnClickListener {
-                onItemClicked(currentItem)
+                onItemClicked(currentItem, position)
             }
         }
     }
@@ -45,7 +45,6 @@ class BookMarkUsersAdapter (
 
             override fun areContentsTheSame(oldItem: BookMarkUsers, newItem: BookMarkUsers) =
                 oldItem == newItem
-            //(oldItem == newItem || oldItem == newItem.apply { isChecked = !isChecked })
         }
     }
 }

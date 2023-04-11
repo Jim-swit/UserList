@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.project.userlist.databinding.FragmentBookmarkUserListBinding
 import org.project.userlist.ui.adapter.BookMarkUsersAdapter
@@ -44,7 +45,7 @@ class BookmarkUserListFragment : ViewBindingBaseFragment<FragmentBookmarkUserLis
         val recyclerView = binding.bookMarkRecyclerView
 
 
-        adapter = BookMarkUsersAdapter() { bookMarkUsers ->
+        adapter = BookMarkUsersAdapter() { bookMarkUsers, position ->
             CoroutineScope(Dispatchers.IO).launch {
                 bookMarkUserListViewModel.deleteBookMarkUsers(bookMarkUsers)
             }

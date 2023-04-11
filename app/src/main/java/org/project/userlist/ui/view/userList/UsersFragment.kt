@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.project.userlist.databinding.FragmentUserListBinding
 import org.project.userlist.ui.adapter.UsersAdapter
@@ -50,16 +51,23 @@ class UsersFragment : ViewBindingBaseFragment<FragmentUserListBinding>() {
     private fun initAdapter() {
         val recyclerView = binding.recyclerView
 
-        adapter = UsersAdapter() {users ->
+        adapter = UsersAdapter() {users, position ->
             CoroutineScope(Dispatchers.IO).launch {
                 if (users.bookMarked) {
                     userListViewModel.insertBookMarkUsers(users)
+                    withContext(Dispatchers.Main) {
+                        binding.recyclerView.adapter?.notifyItemChanged(position,1 )
+                    }
                 } else {
                     userListViewModel.deleteBookMarkUsers(users)
+                    withContext(Dispatchers.Main) {
+                        binding.recyclerView.adapter?.notifyItemChanged(position, 1)
+                    }
                 }
             }
         }
 
+        recyclerView.itemAnimator = null
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }

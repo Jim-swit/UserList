@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
 import org.project.userlist.data.local.UsersDb.Companion.STARTPAGE
-import org.project.userlist.data.remote.ApiCall
+import org.project.userlist.data.remote.APICall
 import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.Users
 
@@ -26,26 +26,29 @@ class UsersBoundaryCallback(
     private lateinit var keepData:Users
 
     override fun onZeroItemsLoaded() {
+        Log.d(TAG, "Zero")
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = ApiCall { webService.getUserListPaging(STARTPAGE, per_page) }) {
+            when(val result = APICall { webService.getUserListPaging(STARTPAGE, per_page) }) {
                 is ApiResult.ApiSuccess -> {
+                    Log.d(TAG, "ApiSuccess")
                     result.data?.let { usersList ->
+                        Log.d(TAG, "ApiSuccess & Data Not Null")
                         db.usersDao().insertUsers(*usersList.toTypedArray())
                     }
                 }
                 is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.message}")
-                }
-                is ApiResult.ApiException -> {
                     Log.d(TAG, "onFailure: ${result.exception.message}")
                 }
+
+                else -> {}
             }
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
+        Log.d(TAG, "AtEnd")
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = ApiCall { webService.getUserListPaging(itemAtEnd.id.toInt()+1, per_page) }) {
+            when(val result = APICall { webService.getUserListPaging(itemAtEnd.id.toInt()+1, per_page) }) {
                 is ApiResult.ApiSuccess -> {
                     result.data?.let { usersList ->
                         keepData = usersList.last()
@@ -53,11 +56,9 @@ class UsersBoundaryCallback(
                     }
                 }
                 is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.message}")
-                }
-                is ApiResult.ApiException -> {
                     Log.d(TAG, "onFailure: ${result.exception.message}")
                 }
+                else -> { }
             }
         }
     }
@@ -68,6 +69,7 @@ class UsersBoundaryCallback(
     }
 
     fun initKeepData() {
+        Log.d(TAG, "initKeepData")
         CoroutineScope(Dispatchers.IO).launch {
             db.usersDao().getUsersLast()?.let {
                 keepData = it

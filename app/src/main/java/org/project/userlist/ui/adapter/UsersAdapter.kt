@@ -13,7 +13,7 @@ import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.Users
 
 class UsersAdapter(
-    private var onItemClicked: ((updatedUsers: Users) -> Unit)
+    private var onItemClicked: ((updatedUsers: Users, position: Int) -> Unit)
 )
     : PagedListAdapter<Users, UsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
 
@@ -31,8 +31,8 @@ class UsersAdapter(
             binding.favoriteButton.setOnClickListener {
                 Log.d("test", "id : ${currentItem.id}")
                 currentItem.bookMarked = !currentItem.bookMarked
-                onItemClicked(currentItem)
-                notifyItemChanged(position)
+                onItemClicked(currentItem, position)
+                //notifyItemChanged(position)
             }
         }
     }
@@ -56,7 +56,6 @@ class UsersAdapter(
 
             override fun areContentsTheSame(oldItem: Users, newItem: Users) =
                 oldItem == newItem
-                //(oldItem == newItem || oldItem == newItem.apply { isChecked = !isChecked })
         }
     }
 }

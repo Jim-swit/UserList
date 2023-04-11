@@ -9,7 +9,7 @@ import org.project.userlist.data.local.dao.UsersDao
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
-@Database(entities = [Users::class, BookMarkUsers::class], version = 2, exportSchema = false)
+@Database(entities = [Users::class, BookMarkUsers::class], version = 1, exportSchema = false)
 abstract class UsersDb : RoomDatabase() {
     companion object {
         const val STARTPAGE:Int = 0
