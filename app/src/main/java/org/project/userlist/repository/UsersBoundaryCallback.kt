@@ -13,52 +13,21 @@ import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.Users
 
 class UsersBoundaryCallback(
-    private val webService: RetrofitGITAPI,
-    private val db: UsersDb,
-    private val per_page: Int
+    private val per_page: Int,
+    private val getUsersList: suspend (Int, Int) -> Unit
 ) : PagedList.BoundaryCallback<Users>() {
     private val TAG = "UsersBoundaryCallback"
 
-    init {
-        initKeepData()
-    }
-
-    private lateinit var keepData:Users
 
     override fun onZeroItemsLoaded() {
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = ApiCall { webService.getUserListPaging(STARTPAGE, per_page) }) {
-                is ApiResult.ApiSuccess -> {
-                    result.data?.let { usersList ->
-                        db.usersDao().insertUsers(*usersList.toTypedArray())
-                    }
-                }
-                is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.message}")
-                }
-                is ApiResult.ApiException -> {
-                    Log.d(TAG, "onFailure: ${result.exception.message}")
-                }
-            }
+            getUsersList(STARTPAGE, per_page)
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = ApiCall { webService.getUserListPaging(itemAtEnd.id.toInt()+1, per_page) }) {
-                is ApiResult.ApiSuccess -> {
-                    result.data?.let { usersList ->
-                        keepData = usersList.last()
-                        db.usersDao().insertUsers(*usersList.toTypedArray())
-                    }
-                }
-                is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.message}")
-                }
-                is ApiResult.ApiException -> {
-                    Log.d(TAG, "onFailure: ${result.exception.message}")
-                }
-            }
+            getUsersList(itemAtEnd.id.toInt(), per_page)
         }
     }
 
@@ -67,17 +36,8 @@ class UsersBoundaryCallback(
         super.onItemAtFrontLoaded(itemAtFront)
     }
 
-    fun initKeepData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            db.usersDao().getUsersLast()?.let {
-                keepData = it
-            }
-        }
-    }
-
-    fun reTryListener() {
-        // TODO: keepData
-        onItemAtEndLoaded(keepData)
+    fun reTry(users: Users) {
+        onItemAtEndLoaded(users)
     }
     fun reFreshListener() {
         Log.d(TAG, "reFresh")

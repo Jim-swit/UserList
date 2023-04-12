@@ -1,11 +1,18 @@
 package org.project.userlist.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
+import org.project.userlist.data.remote.ApiCall
+import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
@@ -17,13 +24,14 @@ class UsersRepository(
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
     private val config = providePagingConfig()
+    private val TAG = "UsersRepository"
 
     init {
         initBuilder()
     }
 
     private fun initBuilder() {
-        boundaryCallback = UsersBoundaryCallback(retrofitApi, db, config.pageSize)
+        boundaryCallback = UsersBoundaryCallback(config.pageSize, ::getUsersList)
         val data: DataSource.Factory<Int, Users> = db.usersDao().getUsersAll()
         val bookMarkData: DataSource.Factory<Int, BookMarkUsers> = db.bookMarkUsersDao().getBookMarkUsersAll()
 
@@ -31,6 +39,28 @@ class UsersRepository(
             .setBoundaryCallback(boundaryCallback)
 
         bookMarkPagedListbuilder = LivePagedListBuilder(bookMarkData, config)
+    }
+
+    private suspend fun getUsersList(startPage:Int, perPage:Int) {
+        return withContext(Dispatchers.IO) {
+            when(val result = ApiCall { retrofitApi.getUserListPaging(startPage, perPage) }) {
+                is ApiResult.ApiSuccess -> {
+                    result.data?.let { usersList ->
+                        insertUsers(usersList.toTypedArray())
+                    }
+                }
+                is ApiResult.ApiError -> {
+                    Log.d(TAG, "onFailur: ${result.message}")
+                }
+                is ApiResult.ApiException -> {
+                    Log.d(TAG, "onFailure: ${result.exception.message}")
+                }
+            }
+        }
+    }
+
+    private suspend fun insertUsers(usersList:Array<Users>) {
+        db.usersDao().insertUsers(*usersList)
     }
 
     fun loadUsers(): LiveData<PagedList<Users>> {
@@ -42,7 +72,11 @@ class UsersRepository(
     }
 
     fun reTryListener() {
-        boundaryCallback.reTryListener()
+        CoroutineScope(Dispatchers.IO).launch {
+            db.usersDao().getUsersLast()?.let {
+                boundaryCallback.reTry(users = it)
+            }
+        }
     }
 
     fun reFreshListener() {
