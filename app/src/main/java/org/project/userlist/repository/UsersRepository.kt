@@ -2,11 +2,14 @@ package org.project.userlist.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.project.userlist.data.remote.RetrofitGITAPI
@@ -27,6 +30,8 @@ class UsersRepository(
     private val config = providePagingConfig().set8px()
     private val TAG = "UsersRepository"
 
+    var networkState: LiveData<ApiResult<List<Users>>> = liveData { emit(ApiResult.ApiLoading<List<Users>>()) }
+
     init {
         initBuilder()
     }
@@ -43,25 +48,39 @@ class UsersRepository(
     }
 
     private suspend fun getUsersList(startPage:Int, perPage:Int) {
-        return withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
+            Log.d("netStateTest", "getUsersList: $startPage")
+            val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }
+            Log.d("netStateTest", "getUsersList: Data1 $result")
+            Log.d("netStateTest", "getUsersList: Data1 ${networkState.value}}")
+            networkState = liveData { emit(result) }
+
+            Log.d("netStateTest", "getUsersList: Data2 ${networkState.value}}")
+
+            /*
             when(val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }) {
                 is ApiResult.ApiSuccess -> {
+                    boundaryCallback.setNetworkAccessCount()
                     result.data?.let { usersList ->
                         insertUsers(usersList.toTypedArray())
                     }
                 }
                 is ApiResult.ApiError -> {
                     Log.d(TAG, "onFail: ${result.exception.message}")
+                    delay(1000)
+                    reTryListener()
                 }
 
                 is ApiResult.ApiLoading -> {
                     Log.d(TAG, "onLoading: ${result.data}")
                 }
             }
+
+             */
         }
     }
 
-    private suspend fun insertUsers(usersList:Array<Users>) {
+    private suspend fun insertUsersDao(vararg usersList: Users) {
         db.usersDao().insertUsers(*usersList)
     }
 
@@ -73,8 +92,11 @@ class UsersRepository(
         return bookMarkPagedListbuilder.build()
     }
 
-    fun reTryListener() {
+    fun reTryListener(connected:Boolean) {
+        Log.d(TAG, "netStateTest: $connected")
         CoroutineScope(Dispatchers.IO).launch {
+            if(connected)
+                boundaryCallback.setNetworkAccessCount()
             db.usersDao().getUsersLast()?.let {
                 boundaryCallback.reTry(users = it)
             }
@@ -133,6 +155,16 @@ class UsersRepository(
             }
         )
     }
+
+    suspend fun insertUsers(vararg users: Users) {
+        insertUsersDao(*users)
+    }
+/*
+    fun unConnectNetWork() {
+        if()
+    }
+
+ */
 
 
     /*

@@ -13,6 +13,7 @@ class UsersBoundaryCallback(
     private val getUsersList: suspend (Int, Int) -> Unit
 ) : PagedList.BoundaryCallback<Users>() {
     private val TAG = "UsersBoundaryCallback"
+    companion object {var networkAccessCount: Int = 5}
 
 
     override fun onZeroItemsLoaded() {
@@ -23,7 +24,8 @@ class UsersBoundaryCallback(
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
-        Log.d(TAG, "AtEnd")
+        Log.d(TAG, "AtEnd ${itemAtEnd.id}}")
+        --networkAccessCount
         CoroutineScope(Dispatchers.IO).launch {
             getUsersList(itemAtEnd.id.toInt(), per_page)
         }
@@ -35,10 +37,17 @@ class UsersBoundaryCallback(
     }
 
     fun reTry(users: Users) {
-        onItemAtEndLoaded(users)
+        Log.d(TAG, "reTry $networkAccessCount")
+        if(networkAccessCount >= 0) {
+            Log.d(TAG, "reTry Success")
+            onItemAtEndLoaded(users)
+        }
     }
     fun reFreshListener() {
         Log.d(TAG, "reFresh")
         //onZeroItemsLoaded()
+    }
+    fun setNetworkAccessCount() {
+        networkAccessCount = 5
     }
 }

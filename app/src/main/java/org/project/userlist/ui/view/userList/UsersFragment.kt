@@ -1,5 +1,6 @@
 package org.project.userlist.ui.view.userList
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -11,15 +12,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.project.userlist.data.remote.ApiResult
+import org.project.userlist.data.remote.NetworkConnect
+import org.project.userlist.data.remote.NetworkResult
 import org.project.userlist.databinding.FragmentUserListBinding
 import org.project.userlist.ui.adapter.UsersAdapter
 import org.project.userlist.ui.view.base.ViewBindingBaseFragment
 
-class UsersFragment : ViewBindingBaseFragment<FragmentUserListBinding>() {
+class UsersFragment: ViewBindingBaseFragment<FragmentUserListBinding>() {
 
     private lateinit var adapter: UsersAdapter
 
     private val userListViewModel: UsersViewModel by sharedViewModel()
+    private lateinit var networkConnect:NetworkConnect
+
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -28,6 +35,9 @@ class UsersFragment : ViewBindingBaseFragment<FragmentUserListBinding>() {
     }
 
     override fun initView() {
+
+        networkConnect = NetworkConnect(context = requireContext())
+
         binding.apply {
             buttonFirst.setOnClickListener {
                 userListViewModel.reTryListner()
@@ -44,7 +54,52 @@ class UsersFragment : ViewBindingBaseFragment<FragmentUserListBinding>() {
             userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
                 adapter.submitList(it)
             })
+
+            userListViewModel.networkState.observe(this@UsersFragment.viewLifecycleOwner, Observer { result ->
+
+                when(result) {
+                    is ApiResult.ApiSuccess -> {
+                        Log.d("netStateTest","ApiResult Success")
+                        lifecycleScope.launch {
+
+                            result.data?.let {
+                                Log.d("netStateTest","insertData ${it}")
+                                userListViewModel.insertUsersList(it) }
+                        }
+                    }
+
+                    is ApiResult.ApiError -> {
+                        userListViewModel.reTryListner()
+                        Log.d("netStateTest","NetworkResult.ERROR")
+                    }
+
+                    is ApiResult.ApiLoading -> {
+                        Log.d("netStateTest","NetworkResult.Loading")
+                    }
+                }
+            })
         }
+
+
+        networkConnect.observe(this.viewLifecycleOwner, Observer { NETWORK_TYPE ->
+            when(NETWORK_TYPE) {
+
+                is NetworkResult.MOBILE  -> {
+                    userListViewModel.reConnectNetWork()
+                    Log.d("netStateTest","NetworkResult.MOBILE")
+                }
+
+                is NetworkResult.WIFI -> {
+                    userListViewModel.reConnectNetWork()
+                    Log.d("netStateTest","NetworkResult.WIFI")
+                }
+
+                is NetworkResult.NOT_CONNECTED -> {
+                    Log.d("netStateTest","NetworkResult.NOT_CONNECTED")
+                }
+
+            }
+        })
     }
 
 
