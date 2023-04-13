@@ -44,8 +44,7 @@ class BookmarkUserListFragment : ViewBindingBaseFragment<FragmentBookmarkUserLis
     private fun initAdapter() {
         val recyclerView = binding.bookMarkRecyclerView
 
-
-        adapter = BookMarkUsersAdapter() { bookMarkUsers, position ->
+        adapter = BookMarkUsersAdapter() { bookMarkUsers, _ ->
             CoroutineScope(Dispatchers.IO).launch {
                 bookMarkUserListViewModel.deleteBookMarkUsers(bookMarkUsers)
             }

@@ -48,7 +48,7 @@ class UsersBoundaryCallback(
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         Log.d(TAG, "AtEnd")
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = APICall { webService.getUserListPaging(itemAtEnd.id.toInt()+1, per_page) }) {
+            when(val result = APICall { webService.getUserListPaging(itemAtEnd.id.toInt(), per_page) }) {
                 is ApiResult.ApiSuccess -> {
                     result.data?.let { usersList ->
                         keepData = usersList.last()
