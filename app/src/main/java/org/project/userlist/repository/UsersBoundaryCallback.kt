@@ -5,61 +5,27 @@ import androidx.paging.PagedList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.project.userlist.data.remote.RetrofitGITAPI
-import org.project.userlist.data.local.UsersDb
 import org.project.userlist.data.local.UsersDb.Companion.STARTPAGE
-import org.project.userlist.data.remote.APICall
-import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.Users
 
 class UsersBoundaryCallback(
-    private val webService: RetrofitGITAPI,
-    private val db: UsersDb,
-    private val per_page: Int
+    private val per_page: Int,
+    private val getUsersList: suspend (Int, Int) -> Unit
 ) : PagedList.BoundaryCallback<Users>() {
     private val TAG = "UsersBoundaryCallback"
 
-    init {
-        initKeepData()
-    }
-
-    private lateinit var keepData:Users
 
     override fun onZeroItemsLoaded() {
         Log.d(TAG, "Zero")
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = APICall { webService.getUserListPaging(STARTPAGE, per_page) }) {
-                is ApiResult.ApiSuccess -> {
-                    Log.d(TAG, "ApiSuccess")
-                    result.data?.let { usersList ->
-                        Log.d(TAG, "ApiSuccess & Data Not Null")
-                        db.usersDao().insertUsers(*usersList.toTypedArray())
-                    }
-                }
-                is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.exception.message}")
-                }
-
-                else -> {}
-            }
+            getUsersList(STARTPAGE, per_page)
         }
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Users) {
         Log.d(TAG, "AtEnd")
         CoroutineScope(Dispatchers.IO).launch {
-            when(val result = APICall { webService.getUserListPaging(itemAtEnd.id.toInt(), per_page) }) {
-                is ApiResult.ApiSuccess -> {
-                    result.data?.let { usersList ->
-                        keepData = usersList.last()
-                        db.usersDao().insertUsers(*usersList.toTypedArray())
-                    }
-                }
-                is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailure: ${result.exception.message}")
-                }
-                else -> { }
-            }
+            getUsersList(itemAtEnd.id.toInt(), per_page)
         }
     }
 
@@ -68,18 +34,8 @@ class UsersBoundaryCallback(
         super.onItemAtFrontLoaded(itemAtFront)
     }
 
-    fun initKeepData() {
-        Log.d(TAG, "initKeepData")
-        CoroutineScope(Dispatchers.IO).launch {
-            db.usersDao().getUsersLast()?.let {
-                keepData = it
-            }
-        }
-    }
-
-    fun reTryListener() {
-        // TODO: keepData
-        onItemAtEndLoaded(keepData)
+    fun reTry(users: Users) {
+        onItemAtEndLoaded(users)
     }
     fun reFreshListener() {
         Log.d(TAG, "reFresh")
