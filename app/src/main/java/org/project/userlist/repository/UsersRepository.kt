@@ -13,6 +13,7 @@ import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
 import org.project.userlist.data.remote.APICall
 import org.project.userlist.data.remote.ApiResult
+import org.project.userlist.data.remote.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
@@ -23,7 +24,7 @@ class UsersRepository(
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
-    private val config = providePagingConfig()
+    private val config = providePagingConfig().set8px()
     private val TAG = "UsersRepository"
 
     init {
@@ -50,10 +51,12 @@ class UsersRepository(
                     }
                 }
                 is ApiResult.ApiError -> {
-                    Log.d(TAG, "onFailur: ${result.exception.message}")
+                    Log.d(TAG, "onFail: ${result.exception.message}")
                 }
 
-                else -> {}
+                is ApiResult.ApiLoading -> {
+                    Log.d(TAG, "onLoading: ${result.data}")
+                }
             }
         }
     }
@@ -109,6 +112,8 @@ class UsersRepository(
         updateUsers(users)
     }
 
+
+    // ViewModel에서 호출 가능한 메서드
     suspend fun insertBookMarkUsersFromUsers(users:Users) {
         insertBookMarkUsers(users)
     }
@@ -137,13 +142,5 @@ class UsersRepository(
     }
 
      */
-    companion object {
-        fun providePagingConfig() : PagedList.Config = PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
-            .setInitialLoadSizeHint(8) // 최초 로드 사이즈
-            .setPageSize(8) // 각 페이지의 크기
-            .setPrefetchDistance(5) // 미리 로드할 거리(개수) 정의
-            .build()
-    }
 }
 
