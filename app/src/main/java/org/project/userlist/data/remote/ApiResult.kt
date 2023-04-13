@@ -11,15 +11,20 @@ sealed interface ApiResult<T: Any> {
 }
 
 suspend fun <T : Any> APICall(call: suspend () -> Response<T>): ApiResult<T> {
-    try {
-        val response = call()
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return ApiResult.ApiSuccess(it)
+    return runCatching {
+        call()
+    }.fold(
+        onSuccess = {
+            if (it.isSuccessful) {
+                it.body()?.let { body ->
+                    ApiResult.ApiSuccess(body)
+                } ?: ApiResult.ApiError(Throwable("body is null"))
+            } else {
+                ApiResult.ApiError(HttpException(it))
             }
+        },
+        onFailure = {
+            ApiResult.ApiError(it)
         }
-        return ApiResult.ApiError(HttpException(response))
-    } catch (e: Exception) {
-        return ApiResult.ApiError(e)
-    }
+    )
 }
