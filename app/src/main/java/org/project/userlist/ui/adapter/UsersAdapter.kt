@@ -20,9 +20,15 @@ class UsersAdapter(
     inner class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
         fun bind(currentItem: Users, position: Int) {
             binding.recyclerTextView.text = currentItem.login
+
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
+                .override(80,80)
+                .skipMemoryCache(false)
+                .placeholder(R.drawable.user_default)
+                .error(R.drawable.user_default)
                 .into(binding.recyclerImageView)
+
 
             binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context,
                 if(currentItem.bookMarked) R.color.purple_500 else R.color.black

@@ -6,6 +6,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import org.project.userlist.R
 import org.project.userlist.databinding.ItemBookMarkViewBinding
 import org.project.userlist.model.BookMarkUsers
 
@@ -17,9 +18,15 @@ class BookMarkUsersAdapter (
     inner class UserListViewHolder(private val binding: ItemBookMarkViewBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(currentItem: BookMarkUsers, position: Int) {
             binding.recyclerTextView.text = currentItem.login
+
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
+                .override(80,80)
+                .skipMemoryCache(false)
+                .placeholder(R.drawable.user_default)
+                .error(R.drawable.user_default)
                 .into(binding.recyclerImageView)
+
             binding.deleteBtn.setOnClickListener {
                 onItemClicked(currentItem, position)
             }
