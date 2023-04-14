@@ -61,6 +61,7 @@ class NetworkConnect(
 
 
     private fun updateConnection() {
+        // API 29 이상
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.let {
                 when {
@@ -75,7 +76,7 @@ class NetworkConnect(
                     }
                 }
             }
-        }else {
+        }else { // API 29 미만
             val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
             activeNetwork?.type?.let {
                 when(it) {

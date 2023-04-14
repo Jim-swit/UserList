@@ -31,6 +31,7 @@ class UsersBoundaryCallback(
         super.onItemAtFrontLoaded(itemAtFront)
     }
 
+    // REST API 연결 실패 시 or 온라인(mobile, wifi 연결)으로 전환 시 재시도
     fun reTry(users: Users?) {
         if(users == null) {
             onZeroItemsLoaded()

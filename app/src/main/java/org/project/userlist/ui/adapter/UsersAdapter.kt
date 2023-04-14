@@ -35,10 +35,8 @@ class UsersAdapter(
                 ))
 
             binding.favoriteButton.setOnClickListener {
-                Log.d("test", "id : ${currentItem.id}")
                 currentItem.bookMarked = !currentItem.bookMarked
                 onItemClicked(currentItem, position)
-                //notifyItemChanged(position)
             }
         }
     }
