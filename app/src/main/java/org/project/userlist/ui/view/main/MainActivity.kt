@@ -1,7 +1,6 @@
 package org.project.userlist.ui.view.main
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
