@@ -1,4 +1,4 @@
-package org.project.userlist.data.remote
+package org.project.userlist.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -92,5 +92,4 @@ class NetworkConnect(
             }
         }
     }
-
 }

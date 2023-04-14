@@ -2,12 +2,17 @@
     <string name="app_name">UserList</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="user_list_fragment_label">UserList Fragment</string>
-    <string name="bookmark_user_list_fragment_label">Bookmark UserList Fragment</string>
+    <string name="users_fragment_label">UserList Fragment</string>
+    <string name="bookmark_users_fragment_label">Bookmark UserList Fragment</string>
+
+    <string name="users_fragment_title">유저</string>
+    <string name="bookmark_users_fragment_title">즐겨찾기</string>
+
     <string name="users_recyclerview_retry">reTry</string>
     <string name="users_recyclerview_refresh">reFresh</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
 </resources>

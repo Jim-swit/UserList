@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/UserListFragment">
+    app:startDestination="@id/UsersFragment">
 
     <fragment
-        android:id="@+id/UserListFragment"
+        android:id="@+id/UsersFragment"
         android:name="org.project.userlist.ui.view.userList.UsersFragment"
-        android:label="@string/user_list_fragment_label"
-        tools:layout="@layout/fragment_user_list">
+        android:label="@string/users_fragment_label"
+        tools:layout="@layout/fragment_users">
 
         <action
-            android:id="@+id/action_UserListFragment_to_BookmarkUserListFragment"
-            app:destination="@id/BookmarkUserListFragment" />
+            android:id="@+id/action_UserFragment_to_BookmarkUserFragment"
+            app:destination="@id/BookmarkUsersFragment" />
     </fragment>
     <fragment
-        android:id="@+id/BookmarkUserListFragment"
-        android:name="org.project.userlist.ui.view.userList.BookmarkUserListFragment"
-        android:label="@string/bookmark_user_list_fragment_label"
-        tools:layout="@layout/fragment_bookmark_user_list">
+        android:id="@+id/BookmarkUsersFragment"
+        android:name="org.project.userlist.ui.view.userList.BookmarkUserFragment"
+        android:label="@string/bookmark_users_fragment_label"
+        tools:layout="@layout/fragment_bookmark_users">
 
         <action
-            android:id="@+id/action_BookmarkUserListFragment_to_UserListFragment"
-            app:destination="@id/UserListFragment" />
+            android:id="@+id/action_BookmarkUsersFragment_to_UsersFragment"
+            app:destination="@id/UsersFragment" />
     </fragment>
 </navigation>

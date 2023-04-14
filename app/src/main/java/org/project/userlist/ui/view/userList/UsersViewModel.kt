@@ -2,9 +2,12 @@ package org.project.userlist.ui.view.userList
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.model.Users
 import org.project.userlist.repository.UsersRepository
@@ -13,12 +16,23 @@ class UsersViewModel(
     private val usersRepository: UsersRepository
 ): ViewModel() {
 
+    init {
+        initNetworkState()
+    }
     private val _usersList:LiveData<PagedList<Users>> by lazy { usersRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
 
-    private val _networkState:LiveData<ApiResult<List<Users>>> =  usersRepository.networkState
+    private val _networkState:MutableLiveData<ApiResult<List<Users>>> = MutableLiveData<ApiResult<List<Users>>>()
     val networkState:LiveData<ApiResult<List<Users>>> get() = _networkState
+
+    private fun initNetworkState() {
+        viewModelScope.launch {
+            usersRepository.networkState.observeForever {
+                _networkState.value = it
+            }
+        }
+    }
 
     suspend fun insertUsersList(users:List<Users>) {
         usersRepository.insertUsers(*users.toTypedArray())
@@ -33,28 +47,14 @@ class UsersViewModel(
     }
 
     fun reConnectNetWork() {
-        Log.d("netStateTest", "reConnectNetWork: ${networkState.value}")
         if(networkState.value is ApiResult.ApiError) {
-            usersRepository.reTryListener(true)
-        }
-        usersRepository.reTryListener(true)
-        // usersRepository.unConnectNetWork()
-    }
-
-
-    fun reTryListner() {
-        usersRepository.reTryListener(false)
-    }
-
-    fun reFreshListner() {
-        usersRepository.reFreshListener()
-    }
-    /* TODO: 사용자 등록
-    fun insertUsersDb(users: Users) {
-        db.runInTransaction {
-            db.usersDao().insertUsers(users)
+            reTryListener(true)
         }
     }
 
-     */
+    fun reTryListener(connected:Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            usersRepository.reTryListener(connected)
+        }
+    }
 }

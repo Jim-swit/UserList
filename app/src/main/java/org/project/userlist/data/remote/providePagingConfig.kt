@@ -9,5 +9,4 @@ class providePagingConfig {
         .setPageSize(8) // 각 페이지의 크기
         .setPrefetchDistance(8) // 미리 로드할 거리(개수) 정의
         .build()
-
 }

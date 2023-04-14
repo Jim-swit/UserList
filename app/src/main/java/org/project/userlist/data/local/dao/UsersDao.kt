@@ -18,6 +18,9 @@ interface UsersDao {
     @Query("SELECT * FROM Users ORDER BY id DESC LIMIT 1")
     suspend fun getUsersLast(): Users
 
+    @Query("SELECT * FROM Users WHERE login = :getid")
+    fun getUsers2(getid:String): Users
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUsers(vararg users: Users)
 
