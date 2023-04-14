@@ -8,18 +8,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import org.project.userlist.R
 import org.project.userlist.databinding.ActivityMainBinding
+import org.project.userlist.ui.view.base.ViewBindingBaseActivity
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : ViewBindingBaseActivity<ActivityMainBinding>
+    ({ActivityMainBinding.inflate(it)}) {
 
     private val navController: NavController by lazy {
         requireNotNull(supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)).findNavController()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)

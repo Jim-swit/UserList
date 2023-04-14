@@ -4,9 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "Bookmark_User")
 data class User(
-    @PrimaryKey
     @SerializedName("id") val id: String,                   // PrimaryKey로 중복 X
     @SerializedName("login") val login:String,              // 유저 닉네임
     @SerializedName("node_id") val node_id:String,          // GraphQL 작업에 필요한 전역 id : 사용자, 이슈, 끌어오기 요청 등에 엑세스 가능
