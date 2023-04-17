@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view.base
+package org.project.userlist.view.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

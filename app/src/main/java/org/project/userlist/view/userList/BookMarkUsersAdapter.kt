@@ -1,4 +1,4 @@
-package org.project.userlist.ui.adapter
+package org.project.userlist.view.userList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

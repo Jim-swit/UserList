@@ -1,6 +1,5 @@
-package org.project.userlist.ui.adapter
+package org.project.userlist.view.userList
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat

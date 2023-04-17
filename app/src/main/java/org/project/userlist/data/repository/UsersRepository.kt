@@ -17,136 +17,21 @@ import org.project.userlist.data.network.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
-class UsersRepository(
-    private val db: UsersDb,
-    private val retrofitApi: RetrofitGITAPI
-) {
-    private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
-    private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
-    private lateinit var boundaryCallback: UsersBoundaryCallback
-    private val config = providePagingConfig().set8px()
-    private val TAG = "UsersRepository"
-
-    private val _networkState = MutableLiveData<ApiResult<List<Users>>>()
-    val networkState:LiveData<ApiResult<List<Users>>> get() = _networkState
-
-    init {
-        initBuilder()
-    }
-
-    private fun initBuilder() {
-        boundaryCallback = UsersBoundaryCallback(config.pageSize, ::getUsersList)
-        val data: DataSource.Factory<Int, Users> = db.usersDao().getUsersAll()
-        val bookMarkData: DataSource.Factory<Int, BookMarkUsers> = db.bookMarkUsersDao().getBookMarkUsersAll()
-
-        pagedListbuilder = LivePagedListBuilder(data, config)
-            .setBoundaryCallback(boundaryCallback)
-
-        bookMarkPagedListbuilder = LivePagedListBuilder(bookMarkData, config)
-    }
-
-    private fun getUsersList(startPage:Int, perPage:Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }
-            _networkState.postValue(result)
-        }
-    }
-
-
-    // UsersFragment 초기화 시 호출
-    fun loadUsers(): LiveData<PagedList<Users>> {
-        return pagedListbuilder.build()
-    }
-
-    // BookmarkUsersListFragment 초기화 시 호출
-    fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>> {
-        return bookMarkPagedListbuilder.build()
-    }
-
-    suspend fun reTryListener(connected:Boolean) {
-        if(connected)
-            boundaryCallback.setNetworkAccessCount()
-
-        val getData = db.usersDao().getUsersLast()
-
-        // REST API 연결 재시도 속도 조절을 위한 delay
-        delay(1000)
-        boundaryCallback.reTry(getData)
-    }
-
-
-    // 북마크 체크/해제 시 Users 데이터 업데이트
-    private suspend fun updateUsers(updatedUsers:Users) {
-        db.usersDao().updateUsers(updatedUsers)
-    }
-
-
-    // 북마크 체크 해제 시 BookmarkUsers 데이터 삭제
-    private suspend fun deleteBookMarkUsers(users:Users) {
-        BookMarkUsers(
-            id = users.id, login = users.login,
-            node_id = users.node_id, url = users.url,
-            avatar_url = users.avatar_url
-        ).let {
-            db.bookMarkUsersDao().deleteBookMarkUsers(it)
-        }
-        updateUsers(users)
-    }
-
-    // UsersFragment에서 북마크 체크 시 호출
-    suspend fun deleteBookMarkUsersFromUsers(users:Users) {
-        deleteBookMarkUsers(users)
-    }
-
-    // BookMarkFragment에서 북마크 체크 해제 시 호출
-    suspend fun deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers: BookMarkUsers) {
-        deleteBookMarkUsers(
-            bookMarkUsers.let {
-                Users(
-                    id = it.id, login = it.login,
-                    node_id = it.node_id, url = it.url,
-                    avatar_url = it.avatar_url, bookMarked = false
-                )
-            }
-        )
-    }
-
+interface UsersRepository {
+    val networkState: LiveData<ApiResult<List<Users>>>
+    fun loadUsers(): LiveData<PagedList<Users>>
+    fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>>
+    suspend fun reTry(connected:Boolean)
     
-    // 북마크 체크 시 BookmarkUsers 데이터 저장
-    private suspend fun insertBookMarkUsers(users:Users) {
-        BookMarkUsers(
-            id = users.id, login = users.login,
-            node_id = users.node_id, url = users.url,
-            avatar_url = users.avatar_url
-        ).let {
-            db.bookMarkUsersDao().insertBookMarkUsers(it)
-        }
-
-        updateUsers(users)
-    }
-    
-    suspend fun insertBookMarkUsersFromUsers(users:Users) {
-        insertBookMarkUsers(users)
-    }
+    suspend fun insertUsers(vararg users: Users)
 
 
+    // BookMarkUsers 이벤트 처리
+    suspend fun deleteBookMarkUsers(users: Users)
+    suspend fun deleteBookMarkUsers(bookMarkUsers: BookMarkUsers)
 
-    // REST API Result Room에 저장
-    private suspend fun insertUsersDao(vararg usersList: Users) {
-        db.usersDao().insertUsers(*usersList)
-        boundaryCallback.setNetworkAccessCount()
-    }
-
-    suspend fun insertUsers(vararg users: Users) {
-        insertUsersDao(*users)
-    }
-
-    /*
-    // 특정 키로 이동
-    fun postKeyData(key: Int) : LiveData<PagedList<Users>> {
-        return pagedListbuilder.setInitialLoadKey(key).build()
-    }
-
-     */
+    suspend fun insertBookMarkUsers(users: Users)
+    suspend fun insertBookMarkUsers(bookMarkUsers: BookMarkUsers)
 }
+
 
