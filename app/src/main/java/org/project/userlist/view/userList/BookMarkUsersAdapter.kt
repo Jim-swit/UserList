@@ -1,25 +1,24 @@
-package org.project.userlist.ui.adapter
+package org.project.userlist.view.userList
 
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import org.project.userlist.R
-import org.project.userlist.databinding.ItemViewBinding
-import org.project.userlist.model.Users
+import org.project.userlist.databinding.ItemBookMarkViewBinding
+import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.ui.view.userDetail.UserDetailActivity
 
-class UsersAdapter(
-    private var onItemClicked: ((updatedUsers: Users, position: Int) -> Unit)
+class BookMarkUsersAdapter (
+    private var onItemClicked: ((updatedUsers: BookMarkUsers, position: Int) -> Unit)
 )
-    : PagedListAdapter<Users, UsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
+    : PagedListAdapter<BookMarkUsers, BookMarkUsersAdapter.UserListViewHolder>(DIFF_CALLBACK) {
 
-    inner class UserListViewHolder(private val binding:ItemViewBinding) : ViewHolder(binding.root){
-        fun bind(currentItem: Users, position: Int) {
+    inner class UserListViewHolder(private val binding: ItemBookMarkViewBinding) : RecyclerView.ViewHolder(binding.root){
+        fun bind(currentItem: BookMarkUsers, position: Int) {
             binding.recyclerTextView.text = currentItem.login
 
             Glide.with(binding.root)
@@ -30,20 +29,14 @@ class UsersAdapter(
                 .error(R.drawable.user_default)
                 .into(binding.recyclerImageView)
 
-
-            binding.favoriteButton.setBackgroundColor(ContextCompat.getColor(binding.root.context,
-                if(currentItem.bookMarked) R.color.purple_500 else R.color.black
-                ))
-
-            binding.favoriteButton.setOnClickListener {
-                currentItem.bookMarked = !currentItem.bookMarked
+            binding.deleteBtn.setOnClickListener {
                 onItemClicked(currentItem, position)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
-        val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemBookMarkViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserListViewHolder(binding)
     }
 
@@ -64,11 +57,11 @@ class UsersAdapter(
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Users>() {
-            override fun areItemsTheSame(oldItem: Users, newItem: Users) =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BookMarkUsers>() {
+            override fun areItemsTheSame(oldItem: BookMarkUsers, newItem: BookMarkUsers) =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Users, newItem: Users) =
+            override fun areContentsTheSame(oldItem: BookMarkUsers, newItem: BookMarkUsers) =
                 oldItem == newItem
         }
     }

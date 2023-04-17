@@ -1,4 +1,4 @@
-package org.project.userlist.repository
+package org.project.userlist.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,26 +9,27 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
-import org.project.userlist.data.remote.APICall
-import org.project.userlist.data.remote.ApiResult
-import org.project.userlist.data.remote.providePagingConfig
+import org.project.userlist.data.network.APICall
+import org.project.userlist.data.network.ApiResult
+import org.project.userlist.data.network.api.RetrofitGITAPI
+import org.project.userlist.data.network.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.User
 import org.project.userlist.model.Users
 
-class UserRepository(
+class userRepositoryImpl (
     private val db: UsersDb,
     private val retrofitApi: RetrofitGITAPI
-) {
+): UserRepository {
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
     private val config = providePagingConfig().set8px()
     private val TAG = "userRepository"
 
-    var networkState: MutableLiveData<ApiResult<List<Users>>> = MutableLiveData<ApiResult<List<Users>>>()
+    private val _networkState = MutableLiveData<ApiResult<List<Users>>>()
+    override val networkState: LiveData<ApiResult<List<Users>>> get() = _networkState
 
     init {
         initBuilder()
@@ -48,22 +49,28 @@ class UserRepository(
     private fun getUsersList(startPage:Int, perPage:Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }
-            networkState.postValue(result)
+            _networkState.postValue(result)
         }
     }
 
 
     // UsersFragment 초기화 시 호출
-    fun loadUsers(): LiveData<PagedList<Users>> {
+    override fun loadUsers(): LiveData<PagedList<Users>> {
         return pagedListbuilder.build()
     }
 
     // BookmarkUsersListFragment 초기화 시 호출
-    fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>> {
+    override fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>> {
         return bookMarkPagedListbuilder.build()
     }
 
-    suspend fun reTryListener(connected:Boolean) {
+
+    // 북마크 체크/해제 시 Users 데이터 업데이트
+    private suspend fun updateUsers(updatedUsers: Users) {
+        db.usersDao().updateUsers(updatedUsers)
+    }
+
+    override suspend fun reTry(connected:Boolean) {
         if(connected)
             boundaryCallback.setNetworkAccessCount()
 
@@ -75,58 +82,52 @@ class UserRepository(
     }
 
 
-    // 북마크 체크/해제 시 Users 데이터 업데이트
-    private suspend fun updateUsers(updatedUsers:Users) {
-        db.usersDao().updateUsers(updatedUsers)
-    }
-
-
     // 북마크 체크 해제 시 BookmarkUsers 데이터 삭제
-    private suspend fun deleteBookMarkUsers(users:Users) {
+    override suspend fun deleteBookMarkUsers(users: Users) {
         BookMarkUsers(
             id = users.id, login = users.login,
             node_id = users.node_id, url = users.url,
             avatar_url = users.avatar_url
         ).let {
             db.bookMarkUsersDao().deleteBookMarkUsers(it)
+            updateUsers(users)
         }
-        updateUsers(users)
     }
-
-    // UsersFragment에서 북마크 체크 시 호출
-    suspend fun deleteBookMarkUsersFromUsers(users:Users) {
-        deleteBookMarkUsers(users)
-    }
-
-    // BookMarkFragment에서 북마크 체크 해제 시 호출
-    suspend fun deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers: BookMarkUsers) {
-        deleteBookMarkUsers(
-            bookMarkUsers.let {
+    override suspend fun deleteBookMarkUsers(bookMarkUsers: BookMarkUsers) {
+        bookMarkUsers.let {
+            db.bookMarkUsersDao().deleteBookMarkUsers(it)
+            updateUsers(
                 Users(
                     id = it.id, login = it.login,
                     node_id = it.node_id, url = it.url,
                     avatar_url = it.avatar_url, bookMarked = false
                 )
-            }
-        )
+            )
+        }
     }
 
-    
-    // 북마크 체크 시 BookmarkUsers 데이터 저장
-    private suspend fun insertBookMarkUsers(users:Users) {
+    override suspend fun insertBookMarkUsers(users: Users) {
         BookMarkUsers(
             id = users.id, login = users.login,
             node_id = users.node_id, url = users.url,
             avatar_url = users.avatar_url
         ).let {
             db.bookMarkUsersDao().insertBookMarkUsers(it)
+            updateUsers(users)
         }
-
-        updateUsers(users)
     }
-    
-    suspend fun insertBookMarkUsersFromUsers(users:Users) {
-        insertBookMarkUsers(users)
+
+    override suspend fun insertBookMarkUsers(bookMarkUsers: BookMarkUsers) {
+        bookMarkUsers.let {
+            db.bookMarkUsersDao().insertBookMarkUsers(it)
+            updateUsers(
+                Users(
+                    id = it.id, login = it.login,
+                    node_id = it.node_id, url = it.url,
+                    avatar_url = it.avatar_url, bookMarked = true
+                )
+            )
+        }
     }
 
 
@@ -137,7 +138,7 @@ class UserRepository(
         boundaryCallback.setNetworkAccessCount()
     }
 
-    suspend fun insertUsers(vararg users: Users) {
+    override suspend fun insertUsers(vararg users: Users) {
         insertUsersDao(*users)
     }
 
@@ -149,7 +150,7 @@ class UserRepository(
 
      */
 
-    suspend fun getUserDetail(login:String) : ApiResult<User> {
+    override suspend fun getUserDetail(login:String) : ApiResult<User> {
         return APICall { retrofitApi.getUserDetail(login) }
     }
 }

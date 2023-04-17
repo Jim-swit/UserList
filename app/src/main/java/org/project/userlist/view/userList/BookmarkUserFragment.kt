@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view.userList
+package org.project.userlist.view.userList
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,8 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.project.userlist.utils.NetworkConnect
 import org.project.userlist.utils.NetworkResult
 import org.project.userlist.databinding.FragmentBookmarkUsersBinding
-import org.project.userlist.ui.adapter.BookMarkUsersAdapter
-import org.project.userlist.ui.view.base.ViewBindingBaseFragment
+import org.project.userlist.view.base.ViewBindingBaseFragment
 import org.project.userlist.utils.makeToast
 
 class BookmarkUserFragment : ViewBindingBaseFragment<FragmentBookmarkUsersBinding>() {

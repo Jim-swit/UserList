@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import org.project.userlist.data.local.dao.BookMarkUsersDao
-import org.project.userlist.data.local.dao.UsersDao
+import org.project.userlist.data.local.dto.BookMarkUsersDao
+import org.project.userlist.data.local.dto.UsersDao
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 

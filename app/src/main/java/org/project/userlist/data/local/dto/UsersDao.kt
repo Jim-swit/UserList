@@ -1,4 +1,4 @@
-package org.project.userlist.data.local.dao
+package org.project.userlist.data.local.dto
 
 import androidx.room.Dao
 import androidx.room.Delete

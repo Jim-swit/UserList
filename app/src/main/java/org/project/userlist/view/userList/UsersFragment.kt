@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view.userList
+package org.project.userlist.view.userList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,12 +11,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.project.userlist.data.remote.ApiResult
+import org.project.userlist.data.network.ApiResult
 import org.project.userlist.utils.NetworkConnect
 import org.project.userlist.utils.NetworkResult
 import org.project.userlist.databinding.FragmentUsersBinding
-import org.project.userlist.ui.adapter.UsersAdapter
-import org.project.userlist.ui.view.base.ViewBindingBaseFragment
+import org.project.userlist.view.base.ViewBindingBaseFragment
 import org.project.userlist.utils.makeToast
 
 class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {

@@ -1,10 +1,10 @@
-package org.project.userlist.ui.view.userList
+package org.project.userlist.view.userList
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
+import org.project.userlist.data.repository.UserRepository
 import org.project.userlist.model.BookMarkUsers
-import org.project.userlist.repository.UserRepository
 
 class BookMarkUsersViewModel(
     private val userRepository: UserRepository
@@ -14,6 +14,6 @@ class BookMarkUsersViewModel(
     val boockMarkUsersList: LiveData<PagedList<BookMarkUsers>> get() = _bookMarkUsersList
 
     suspend fun deleteBookMarkUsers(bookMarkUsers:BookMarkUsers) {
-        userRepository.deleteBookMarkUsersFromBookMarkUsers(bookMarkUsers)
+        userRepository.deleteBookMarkUsers(bookMarkUsers)
     }
 }

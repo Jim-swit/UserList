@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.project.userlist.data.remote.ApiResult
+import org.project.userlist.data.network.ApiResult
 import org.project.userlist.databinding.ActivityUserDetailBinding
 import org.project.userlist.ui.view.base.ViewBindingBaseActivity
 

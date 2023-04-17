@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view.main
+package org.project.userlist.view.main
 
 import android.os.Bundle
 import android.view.Menu
