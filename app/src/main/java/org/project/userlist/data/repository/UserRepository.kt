@@ -8,7 +8,7 @@ import org.project.userlist.model.User
 import org.project.userlist.model.Users
 
 interface UserRepository {
-    val networkState: LiveData<ApiResult<List<Users>>>
+    val networkResult: LiveData<ApiResult<List<Users>>>
     fun loadUsers(): LiveData<PagedList<Users>>
     fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>>
     suspend fun reTry(connected:Boolean)

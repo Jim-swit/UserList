@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.project.userlist.data.local.UsersDb
-import org.project.userlist.data.network.APICall
+import org.project.userlist.data.network.ApiCall
 import org.project.userlist.data.network.ApiResult
 import org.project.userlist.data.network.api.RetrofitGITAPI
 import org.project.userlist.data.network.providePagingConfig
@@ -28,8 +28,8 @@ class userRepositoryImpl (
     private val config = providePagingConfig().set8px()
     private val TAG = "userRepository"
 
-    private val _networkState = MutableLiveData<ApiResult<List<Users>>>()
-    override val networkState: LiveData<ApiResult<List<Users>>> get() = _networkState
+    private val _networkState = MutableLiveData<ApiResult<List<Users>>>(ApiResult.Loading)
+    override val networkResult: LiveData<ApiResult<List<Users>>> get() = _networkState
 
     init {
         initBuilder()
@@ -48,7 +48,7 @@ class userRepositoryImpl (
 
     private fun getUsersList(startPage:Int, perPage:Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }
+            val result = ApiCall { retrofitApi.getUserListPaging(startPage, perPage) }
             _networkState.postValue(result)
         }
     }
@@ -151,7 +151,7 @@ class userRepositoryImpl (
      */
 
     override suspend fun getUserDetail(login:String) : ApiResult<User> {
-        return APICall { retrofitApi.getUserDetail(login) }
+        return ApiCall { retrofitApi.getUserDetail(login) }
     }
 }
 

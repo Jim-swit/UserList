@@ -1,4 +1,4 @@
-package org.project.userlist.ui.view.userDetail
+package org.project.userlist.view.userDetail
 
 import android.app.Dialog
 import android.content.Context

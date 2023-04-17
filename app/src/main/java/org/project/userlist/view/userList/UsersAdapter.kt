@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import org.project.userlist.R
 import org.project.userlist.databinding.ItemViewBinding
 import org.project.userlist.model.Users
-import org.project.userlist.ui.view.userDetail.UserDetailActivity
+import org.project.userlist.view.userDetail.UserDetailActivity
 
 class UsersAdapter(
     private var onItemClicked: ((updatedUsers: Users, position: Int) -> Unit)

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import org.project.userlist.R
 import org.project.userlist.databinding.ItemBookMarkViewBinding
 import org.project.userlist.model.BookMarkUsers
-import org.project.userlist.ui.view.userDetail.UserDetailActivity
+import org.project.userlist.view.userDetail.UserDetailActivity
 
 class BookMarkUsersAdapter (
     private var onItemClicked: ((updatedUsers: BookMarkUsers, position: Int) -> Unit)

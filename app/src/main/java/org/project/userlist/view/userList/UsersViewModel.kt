@@ -16,13 +16,14 @@ class UsersViewModel(
 
 
     // Room에서 받아오는 UI에 보여질 Users List
-    private val _usersList:LiveData<PagedList<Users>> by lazy { userRepository.loadUsers() }
-    val usersList:LiveData<PagedList<Users>> get() = _usersList
+    private val _loadUsersList:LiveData<PagedList<Users>> by lazy { userRepository.loadUsers() }
+    val loadUsersList:LiveData<PagedList<Users>> get() = _loadUsersList
 
 
     // REST API로 부터 받아오는 Result(Success, Error, Loading)
-    private val _networkState:LiveData<ApiResult<List<Users>>> = userRepository.networkState
-    val networkState:LiveData<ApiResult<List<Users>>> get() = _networkState
+    private val _getUsersList:LiveData<ApiResult<List<Users>>> = userRepository.networkResult
+    val getUsersList:LiveData<ApiResult<List<Users>>> get() = _getUsersList
+
 
 
     // REST API Success 시 Paging 된 Users List를 Room에 저장
@@ -42,7 +43,7 @@ class UsersViewModel(
 
     // 온라인(mobile, wifi 연결)으로 전환 시 재시도
     fun reConnectNetWork() {
-        if(networkState.value is ApiResult.ApiError) {
+        if(getUsersList.value is ApiResult.Fail.Error || getUsersList.value is ApiResult.Fail.Exception) {
             reTryListener(true)
         }
     }

@@ -1,6 +1,7 @@
 package org.project.userlist.view.userList
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -40,13 +41,13 @@ class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {
         networkConnect = NetworkConnect(context = requireContext())
 
         binding.apply {
-            buttonFirst.setOnClickListener {
+            retryButton.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    userListViewModel.reTryListener(true)
+                    reTryPaging(true)
                 }
             }
 
-            buttonInsert.setOnClickListener {
+            refreshButton.setOnClickListener {
                 adapter.notifyDataSetChanged()
             }
         }
@@ -54,15 +55,16 @@ class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {
         initAdapter()
 
         lifecycleScope.launch {
-            userListViewModel.usersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
+            userListViewModel.loadUsersList.observe(this@UsersFragment.viewLifecycleOwner, Observer {
+                hideRetryAndRefreshButton()
                 adapter.submitList(it)
             })
 
             // REST API 결과에 따른 분기 처리 및 에러 핸들링
-            userListViewModel.networkState.observe(this@UsersFragment.viewLifecycleOwner, Observer { result ->
+            userListViewModel.getUsersList.observe(this@UsersFragment.viewLifecycleOwner, Observer { result ->
                 when(result) {
-                    is ApiResult.ApiSuccess -> {
-                        binding.buttonLinearLayout.visibility = android.view.View.GONE
+                    is ApiResult.Success -> {
+                        hideRetryAndRefreshButton()
 
                         runBlocking {
                             result.data.let {
@@ -72,16 +74,20 @@ class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {
                     }
 
                     // Error 발생 시 reTry & reFresh 버튼 활성화
-                    is ApiResult.ApiError -> {
-                        binding.buttonLinearLayout.visibility = android.view.View.VISIBLE
-                        userListViewModel.reTryListener(false)
+                    is ApiResult.Fail.Error -> {
+                        showRetryAndRefreshButton()
+                        reTryPaging(false)
                     }
 
                     // Loading 상태에 reTry & reFresh 버튼 활성화
-                    is ApiResult.ApiLoading -> {
-                        binding.buttonLinearLayout.visibility = android.view.View.VISIBLE
+                    is ApiResult.Loading -> {
                         // TODO: Loading ProgressBar / Skeleton
-                        // 최하단 아이템 밑에서 ProgressBar를 띄우는 방식으로 고민중
+                        // 최하단 아이템 밑에 스피너를 띄우는 방식으로 고민중입니다.
+                    }
+
+                    is ApiResult.Fail.Exception -> {
+                        showRetryAndRefreshButton()
+                        reTryPaging(false)
                     }
                 }
             })
@@ -130,6 +136,18 @@ class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {
         recyclerView.itemAnimator = null
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+    }
+
+
+    private fun reTryPaging(autoCheck:Boolean) {
+        userListViewModel.reTryListener(autoCheck)
+    }
+    private fun hideRetryAndRefreshButton() {
+        binding.buttonLinearLayout.visibility = View.GONE
+    }
+
+    private fun showRetryAndRefreshButton() {
+        binding.buttonLinearLayout.visibility = View.VISIBLE
     }
 }
 

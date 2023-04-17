@@ -23,7 +23,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
         <Button
-            android:id="@+id/button_first"
+            android:id="@+id/retry_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -31,7 +31,7 @@
             android:text="@string/users_recyclerview_retry" />
 
         <Button
-            android:id="@+id/button_insert"
+            android:id="@+id/refresh_button"
             android:text="@string/users_recyclerview_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

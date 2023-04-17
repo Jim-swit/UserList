@@ -3,28 +3,32 @@ package org.project.userlist.data.network
 import retrofit2.HttpException
 import retrofit2.Response
 
-sealed interface ApiResult<T: Any> {
-    class ApiSuccess<T: Any>(val data: T): ApiResult<T>
-    class ApiError<T: Any>(val exception: Throwable): ApiResult<T>
-    class ApiLoading<T: Any>(): ApiResult<T>
+sealed interface ApiResult<out t> {
+    object Loading: ApiResult<Nothing>
+    data class Success<T: Any>(val data: T): ApiResult<T>
 
+    sealed class Fail: ApiResult<Nothing> {
+        data class Error(val code: Int, val message: String?): ApiResult<Nothing>
+
+        data class Exception(val e: Throwable): ApiResult<Nothing>
+    }
 }
 
-suspend fun <T : Any> APICall(call: suspend () -> Response<T>): ApiResult<T> {
+suspend fun <T : Any> ApiCall(call: suspend () -> Response<T>): ApiResult<T> {
     return runCatching {
         call()
     }.fold(
         onSuccess = {
             if (it.isSuccessful) {
                 it.body()?.let { body ->
-                    ApiResult.ApiSuccess(body)
-                } ?: ApiResult.ApiError(Throwable("body is null"))
+                    ApiResult.Success(body)
+                } ?: ApiResult.Fail.Error(it.code(),it.message())
             } else {
-                ApiResult.ApiError(HttpException(it))
+                ApiResult.Fail.Exception(HttpException(it))
             }
         },
         onFailure = {
-            ApiResult.ApiError(it)
+            ApiResult.Fail.Exception(it)
         }
-    )
+    ) as ApiResult<T>
 }

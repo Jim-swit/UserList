@@ -1,10 +1,6 @@
 package org.project.userlist.data.repository
 
-import android.util.Log
 import androidx.paging.PagedList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.project.userlist.data.local.UsersDb.Companion.STARTPAGE
 import org.project.userlist.model.Users
 

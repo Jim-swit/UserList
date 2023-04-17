@@ -12,7 +12,7 @@ import org.project.userlist.data.network.Retrofit
 import org.project.userlist.data.repository.UserRepository
 import org.project.userlist.data.repository.userRepositoryImpl
 import org.project.userlist.view.userList.BookMarkUsersViewModel
-import org.project.userlist.ui.view.userDetail.UserDetailViewModel
+import org.project.userlist.view.userDetail.UserDetailViewModel
 
 class App :Application() {
 
@@ -34,6 +34,6 @@ class App :Application() {
         viewModel { UsersViewModel(userRepository = get()) }
         viewModel { BookMarkUsersViewModel(userRepository = get()) }
 
-        viewModel { UserDetailViewModel(userRepository = get())}
+        viewModel { UserDetailViewModel(userRepository = get()) }
     }
 }
