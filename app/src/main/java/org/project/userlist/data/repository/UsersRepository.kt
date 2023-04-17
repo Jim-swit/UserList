@@ -1,24 +1,19 @@
-package org.project.userlist.repository
+package org.project.userlist.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.room.withTransaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.project.userlist.data.remote.RetrofitGITAPI
+import org.project.userlist.data.network.api.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
-import org.project.userlist.data.remote.APICall
-import org.project.userlist.data.remote.ApiResult
-import org.project.userlist.data.remote.providePagingConfig
+import org.project.userlist.data.network.APICall
+import org.project.userlist.data.network.ApiResult
+import org.project.userlist.data.network.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
 import org.project.userlist.model.Users
 
@@ -32,7 +27,8 @@ class UsersRepository(
     private val config = providePagingConfig().set8px()
     private val TAG = "UsersRepository"
 
-    var networkState: MutableLiveData<ApiResult<List<Users>>> = MutableLiveData<ApiResult<List<Users>>>()
+    private val _networkState = MutableLiveData<ApiResult<List<Users>>>()
+    val networkState:LiveData<ApiResult<List<Users>>> get() = _networkState
 
     init {
         initBuilder()
@@ -52,7 +48,7 @@ class UsersRepository(
     private fun getUsersList(startPage:Int, perPage:Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val result = APICall { retrofitApi.getUserListPaging(startPage, perPage) }
-            networkState.postValue(result)
+            _networkState.postValue(result)
         }
     }
 

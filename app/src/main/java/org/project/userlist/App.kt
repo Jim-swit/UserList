@@ -6,9 +6,9 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.dsl.module
 import org.project.userlist.data.local.UsersDb
-import org.project.userlist.repository.UsersRepository
+import org.project.userlist.data.repository.UsersRepository
 import org.project.userlist.ui.view.userList.UsersViewModel
-import org.project.userlist.data.remote.Retrofit
+import org.project.userlist.data.network.Retrofit
 import org.project.userlist.ui.view.userList.BookMarkUsersViewModel
 
 class App :Application() {

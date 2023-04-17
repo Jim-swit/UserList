@@ -1,4 +1,4 @@
-package org.project.userlist.data.remote
+package org.project.userlist.data.network
 
 import androidx.paging.PagedList
 

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.project.userlist.data.remote.ApiResult
+import org.project.userlist.data.network.ApiResult
 import org.project.userlist.utils.NetworkConnect
 import org.project.userlist.utils.NetworkResult
 import org.project.userlist.databinding.FragmentUsersBinding

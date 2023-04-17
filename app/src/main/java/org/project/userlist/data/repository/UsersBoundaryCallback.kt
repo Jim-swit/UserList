@@ -1,4 +1,4 @@
-package org.project.userlist.repository
+package org.project.userlist.data.repository
 
 import android.util.Log
 import androidx.paging.PagedList
