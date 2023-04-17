@@ -57,7 +57,7 @@ class UsersAdapter(
         holder.itemView.setOnClickListener { v ->
             if(!currentItem?.url.isNullOrEmpty()) {
                 val intent = Intent(v.context, UserDetailActivity::class.java)
-                intent.putExtra("user_url", currentItem?.url)
+                intent.putExtra("user_login", currentItem?.login)
                 v.context.startActivity(intent)
             }
         }
