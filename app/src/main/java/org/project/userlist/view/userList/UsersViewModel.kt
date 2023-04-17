@@ -7,37 +7,37 @@ import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.project.userlist.data.network.ApiResult
+import org.project.userlist.data.repository.UserRepository
 import org.project.userlist.model.Users
-import org.project.userlist.data.repository.UsersRepository
 
 class UsersViewModel(
-    private val usersRepository: UsersRepository
+    private val userRepository: UserRepository
 ): ViewModel() {
 
 
     // Room에서 받아오는 UI에 보여질 Users List
-    private val _usersList:LiveData<PagedList<Users>> by lazy { usersRepository.loadUsers() }
+    private val _usersList:LiveData<PagedList<Users>> by lazy { userRepository.loadUsers() }
     val usersList:LiveData<PagedList<Users>> get() = _usersList
 
 
     // REST API로 부터 받아오는 Result(Success, Error, Loading)
-    private val _networkState:LiveData<ApiResult<List<Users>>> = usersRepository.networkState
+    private val _networkState:LiveData<ApiResult<List<Users>>> = userRepository.networkState
     val networkState:LiveData<ApiResult<List<Users>>> get() = _networkState
 
 
     // REST API Success 시 Paging 된 Users List를 Room에 저장
     suspend fun insertUsersList(users:List<Users>) {
-        usersRepository.insertUsers(*users.toTypedArray())
+        userRepository.insertUsers(*users.toTypedArray())
     }
 
     // 북마크 체크 시 BookMarkUsers에 해당 Users 데이터 저장
     suspend fun insertBookMarkUsers(users:Users) {
-        usersRepository.insertBookMarkUsers(users)
+        userRepository.insertBookMarkUsers(users)
     }
 
     // 북마크 체크 해제 시 BookMarkUsers에 해당 Users 데이터 삭제
     suspend fun deleteBookMarkUsers(users:Users) {
-        usersRepository.deleteBookMarkUsers(users)
+        userRepository.deleteBookMarkUsers(users)
     }
 
     // 온라인(mobile, wifi 연결)으로 전환 시 재시도
@@ -50,7 +50,7 @@ class UsersViewModel(
     // 다음 페이지 로드 재시도
     fun reTryListener(connected:Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            usersRepository.reTry(connected)
+            userRepository.reTry(connected)
         }
     }
 }

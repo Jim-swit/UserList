@@ -15,17 +15,18 @@ import org.project.userlist.data.network.ApiResult
 import org.project.userlist.data.network.api.RetrofitGITAPI
 import org.project.userlist.data.network.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
+import org.project.userlist.model.User
 import org.project.userlist.model.Users
 
-class UsersRepositoryImpl (
+class userRepositoryImpl (
     private val db: UsersDb,
     private val retrofitApi: RetrofitGITAPI
-): UsersRepository {
+): UserRepository {
     private lateinit var pagedListbuilder : LivePagedListBuilder<Int, Users>
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
     private val config = providePagingConfig().set8px()
-    private val TAG = "UsersRepository"
+    private val TAG = "userRepository"
 
     private val _networkState = MutableLiveData<ApiResult<List<Users>>>()
     override val networkState: LiveData<ApiResult<List<Users>>> get() = _networkState
@@ -148,4 +149,9 @@ class UsersRepositoryImpl (
     }
 
      */
+
+    override suspend fun getUserDetail(login:String) : ApiResult<User> {
+        return APICall { retrofitApi.getUserDetail(login) }
+    }
 }
+

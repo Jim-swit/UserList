@@ -15,7 +15,7 @@ interface RetrofitGITAPI {
     ): Response<List<Users>>
 
     @GET("users/{login}")
-    suspend fun getUser(
+    suspend fun getUserDetail(
         @Path("login") login: String
     ): Response<User>
 }

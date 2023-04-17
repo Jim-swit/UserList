@@ -1,23 +1,13 @@
 package org.project.userlist.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.project.userlist.data.network.api.RetrofitGITAPI
-import org.project.userlist.data.local.UsersDb
-import org.project.userlist.data.network.APICall
 import org.project.userlist.data.network.ApiResult
-import org.project.userlist.data.network.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
+import org.project.userlist.model.User
 import org.project.userlist.model.Users
 
-interface UsersRepository {
+interface UserRepository {
     val networkState: LiveData<ApiResult<List<Users>>>
     fun loadUsers(): LiveData<PagedList<Users>>
     fun loadBookMarkUsers(): LiveData<PagedList<BookMarkUsers>>
@@ -32,6 +22,8 @@ interface UsersRepository {
 
     suspend fun insertBookMarkUsers(users: Users)
     suspend fun insertBookMarkUsers(bookMarkUsers: BookMarkUsers)
+
+    suspend fun getUserDetail(url: String): ApiResult<User>
 }
 
 
