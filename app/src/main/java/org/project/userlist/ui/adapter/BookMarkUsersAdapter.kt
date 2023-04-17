@@ -1,5 +1,6 @@
 package org.project.userlist.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide
 import org.project.userlist.R
 import org.project.userlist.databinding.ItemBookMarkViewBinding
 import org.project.userlist.model.BookMarkUsers
+import org.project.userlist.ui.view.userDetail.UserDetailActivity
 
 class BookMarkUsersAdapter (
     private var onItemClicked: ((updatedUsers: BookMarkUsers, position: Int) -> Unit)
@@ -40,8 +42,17 @@ class BookMarkUsersAdapter (
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
         val currentItem = getItem(position)
+
         if(currentItem != null) {
             holder.bind(currentItem, position)
+        }
+
+        holder.itemView.setOnClickListener { v ->
+            if(!currentItem?.url.isNullOrEmpty()) {
+                val intent = Intent(v.context, UserDetailActivity::class.java)
+                intent.putExtra("user_login", currentItem?.login)
+                v.context.startActivity(intent)
+            }
         }
     }
 

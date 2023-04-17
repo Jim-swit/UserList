@@ -1,28 +1,24 @@
 package org.project.userlist.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.room.withTransaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.project.userlist.data.remote.RetrofitGITAPI
 import org.project.userlist.data.local.UsersDb
 import org.project.userlist.data.remote.APICall
 import org.project.userlist.data.remote.ApiResult
 import org.project.userlist.data.remote.providePagingConfig
 import org.project.userlist.model.BookMarkUsers
+import org.project.userlist.model.User
 import org.project.userlist.model.Users
 
-class UsersRepository(
+class UserRepository(
     private val db: UsersDb,
     private val retrofitApi: RetrofitGITAPI
 ) {
@@ -30,7 +26,7 @@ class UsersRepository(
     private lateinit var bookMarkPagedListbuilder : LivePagedListBuilder<Int, BookMarkUsers>
     private lateinit var boundaryCallback: UsersBoundaryCallback
     private val config = providePagingConfig().set8px()
-    private val TAG = "UsersRepository"
+    private val TAG = "userRepository"
 
     var networkState: MutableLiveData<ApiResult<List<Users>>> = MutableLiveData<ApiResult<List<Users>>>()
 
@@ -152,5 +148,9 @@ class UsersRepository(
     }
 
      */
+
+    suspend fun getUserDetail(login:String) : ApiResult<User> {
+        return APICall { retrofitApi.getUserDetail(login) }
+    }
 }
 
