@@ -7,6 +7,17 @@
     android:fitsSystemWindows="true"
     tools:context=".view.userDetail.UserDetailActivity">
 
+    <ImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/shape_circle"
+        android:layout_marginTop="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
         android:id="@+id/user_login"
         android:layout_width="wrap_content"
