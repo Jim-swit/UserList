@@ -21,6 +21,8 @@ class BookMarkUsersAdapter (
         fun bind(currentItem: BookMarkUsers, position: Int) {
             binding.recyclerTextView.text = currentItem.login
 
+            binding.recyclerImageView.clipToOutline = true
+
             Glide.with(binding.root)
                 .load(currentItem.avatar_url)
                 .override(80,80)

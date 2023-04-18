@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/UsersFragment"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/user"
         android:title="@string/users_fragment_title" />
     <item
         android:id="@+id/BookmarkUsersFragment"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/star_unfilled"
         android:title="@string/bookmark_users_fragment_title" />
 </menu>
