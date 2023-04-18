@@ -24,7 +24,6 @@ class UserDetailActivity : ViewBindingBaseActivity<ActivityUserDetailBinding>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         lifecycleScope.launch {
             userDetailViewModel.getUser.observe(this@UserDetailActivity, Observer { result ->
                 when (result) {
@@ -53,6 +52,7 @@ class UserDetailActivity : ViewBindingBaseActivity<ActivityUserDetailBinding>
         }
 
         getUser()
+        setButton()
     }
     private fun getUser() {
         intent?.extras?.getString("user_login").let { login ->
@@ -76,13 +76,21 @@ class UserDetailActivity : ViewBindingBaseActivity<ActivityUserDetailBinding>
             .into(binding.userAvatar)
     }
 
+    private fun setButton() {
+        binding.finishButton.setOnClickListener {
+            finish()
+        }
+    }
+
     private fun hideView() {
         binding.userLogin.visibility = View.GONE
         binding.userAvatar.visibility = View.GONE
+        binding.finishButton.visibility = View.GONE
     }
 
     private fun showView() {
         binding.userLogin.visibility = View.VISIBLE
         binding.userAvatar.visibility = View.VISIBLE
+        binding.finishButton.visibility = View.VISIBLE
     }
 }

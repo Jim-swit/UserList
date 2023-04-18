@@ -6,6 +6,6 @@
         android:title="@string/users_fragment_title" />
     <item
         android:id="@+id/BookmarkUsersFragment"
-        android:icon="@drawable/star_unfilled"
+        android:icon="@drawable/ic_star_unfilled"
         android:title="@string/bookmark_users_fragment_title" />
 </menu>

@@ -30,6 +30,6 @@
         app:layout_constraintTop_toTopOf="@+id/recycler_image_view"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_image_view"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/bookmark_selector"/>
+        android:background="@drawable/ic_bookmark_selector"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
