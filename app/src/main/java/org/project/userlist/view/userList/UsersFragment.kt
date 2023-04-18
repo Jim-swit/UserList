@@ -66,7 +66,7 @@ class UsersFragment: ViewBindingBaseFragment<FragmentUsersBinding>() {
                     is ApiResult.Success -> {
                         hideRetryAndRefreshButton()
 
-                        runBlocking {
+                        runBlocking(Dispatchers.IO) {
                             result.data.let {
                                 userListViewModel.insertUsersList(it)
                             }
