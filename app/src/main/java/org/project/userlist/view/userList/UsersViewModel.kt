@@ -21,7 +21,7 @@ class UsersViewModel(
 
 
     // REST API로 부터 받아오는 Result(Success, Error, Loading)
-    private val _getUsersList:LiveData<ApiResult<List<Users>>> = userRepository.networkResult
+    private val _getUsersList:LiveData<ApiResult<List<Users>>> get() = userRepository.networkResult
     val getUsersList:LiveData<ApiResult<List<Users>>> get() = _getUsersList
 
 
